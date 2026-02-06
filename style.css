@@ -261,7 +261,8 @@ body::before {
 
 .final-card strong {
   letter-spacing: 3px;
-  color: #ffb7cc;
+  color: rgba(255, 183, 203, 0.856);
+  font-size: 18px;
 }
 /* ================= MEMORY CARD (ORIGINAL STYLE) ================= */
 
