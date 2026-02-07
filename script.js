@@ -30,7 +30,7 @@ document.addEventListener("keydown", e => {
 });
 
 /* ================= TIMER ================= */
-const startDate = new Date("2025-10-20T00:00:00");
+const startDate = new Date("2025-10-20T17:57:00");
 
 setInterval(() => {
   const now = new Date();
