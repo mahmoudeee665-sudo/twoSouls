@@ -471,3 +471,42 @@ body::before {
   color: rgba(255,255,255,0.6);
 }
 /* ================= MODIFICATIONS BASED ON REQUESTS ================= */
+
+
+/* ================= FORCE MEMORY TEXT BELOW IMAGE (SMALL SCREENS) ================= */
+@media (max-width: 768px) {
+
+  .memory-card {
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .memory-card img,
+  .video-card video {
+    border-radius: 26px;
+  }
+
+  .memory-info {
+    position: static !important;   /* يلغي أي absolute نهائيًا */
+    margin-top: 14px;
+    margin-inline: 6px;            /* مسافة جانبية بسيطة */
+    padding: 16px 18px;
+
+    background: rgba(255,255,255,0.20);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+
+    border-radius: 20px;
+    box-shadow: 0 14px 34px rgba(0,0,0,0.25);
+  }
+
+  .memory-info h3 {
+    font-size: 18px;
+  }
+
+  .memory-info p {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+}
