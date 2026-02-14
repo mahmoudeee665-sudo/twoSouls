@@ -32,7 +32,7 @@
   <i style="color: #e64b7c;" class="fa-solid fa-pause"></i>
 </button>
 
-
+<div class="hearts-container"></div>
 
 <body>
 
@@ -43,15 +43,17 @@
     <h3>محتوى خاص</h3>
     <p>من فضلك أدخل كلمة المرور للمتابعة</p>
 
-    <input
-      type="password"
-      id="passwordInput"
-      placeholder="كلمة المرور"
-      inputmode="text"
-      autocomplete="off"
-      autocapitalize="off"
-      autocorrect="off"
-    />
+<input
+  type="password"
+  id="passwordInput"
+  placeholder="كلمة المرور"
+  inputmode="numeric"
+  pattern="[0-9]*"
+  maxlength="4"
+  autocomplete="off"
+/>
+
+
 
     <button type="button" onclick="checkPassword()">دخول</button>
   </div>
