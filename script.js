@@ -1,8 +1,6 @@
 
 
 
-
-
 const PASSWORD = "1511";
 const input = document.getElementById("passwordInput");
 const lock = document.getElementById("lockScreen");
