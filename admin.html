@@ -1,0 +1,1172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>Memories Dashboard</title>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+  <style>
+    :root{
+      --bg:#07070a;
+      --card:rgba(255,255,255,.10);
+      --card2:rgba(255,255,255,.08);
+      --stroke:rgba(255,255,255,.16);
+      --text:#fff;
+      --muted:rgba(255,255,255,.68);
+      --pink:#e64b7c;
+      --pink2:rgba(230,75,124,.35);
+      --shadow:0 22px 80px rgba(0,0,0,.55);
+      --radius:22px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1000px 600px at 20% 10%, rgba(230,75,124,.20), transparent 55%),
+        radial-gradient(900px 700px at 90% 30%, rgba(255,255,255,.08), transparent 60%),
+        radial-gradient(700px 700px at 50% 110%, rgba(230,75,124,.16), transparent 60%),
+        var(--bg);
+    }
+
+    .hidden{display:none !important;}
+
+    .wrap{
+      max-width:1200px;
+      margin:0 auto;
+      padding:26px 18px 40px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .logo{
+      width:44px;height:44px;
+      border-radius:16px;
+      background:linear-gradient(135deg, rgba(230,75,124,.9), rgba(255,255,255,.25));
+      box-shadow:0 16px 40px rgba(230,75,124,.22);
+      display:grid;place-items:center;
+      border:1px solid rgba(255,255,255,.16);
+    }
+
+    .brand h1{
+      font-size:18px;
+      margin:0;
+      letter-spacing:.6px;
+    }
+    .brand p{
+      margin:2px 0 0;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    .pill{
+      padding:10px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+      color:rgba(255,255,255,.85);
+      font-size:12px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .btn{
+      border:0;
+      border-radius:14px;
+      padding:11px 14px;
+      cursor:pointer;
+      font-weight:700;
+      color:#fff;
+      background:linear-gradient(135deg, rgba(230,75,124,1), rgba(230,75,124,.72));
+      box-shadow:0 16px 42px rgba(230,75,124,.22);
+      transition:transform .18s ease, opacity .18s ease;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      user-select:none;
+    }
+    .btn:active{transform:scale(.98)}
+    .btn.secondary{
+      background:rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.16);
+      box-shadow:none;
+      font-weight:600;
+    }
+    .btn.danger{
+      background:rgba(255,65,100,.20);
+      border:1px solid rgba(255,65,100,.30);
+      box-shadow:none;
+    }
+    .btn:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+      transform:none;
+    }
+
+    .glass{
+      background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+      border:1px solid rgba(255,255,255,.15);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow:var(--shadow);
+      border-radius:var(--radius);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 430px 1fr;
+      gap:16px;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+    }
+
+    .panel{ padding:16px; }
+
+    .sectionTitle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+    }
+    .sectionTitle h2{
+      margin:0;
+      font-size:14px;
+      letter-spacing:.7px;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.85);
+    }
+
+    .field{ margin:10px 0; }
+    label{
+      display:block;
+      font-size:12px;
+      color:rgba(255,255,255,.72);
+      margin-bottom:6px;
+    }
+
+    /* IMPORTANT: font-size 16px prevents iPhone zoom */
+    input, textarea, select{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      outline:none;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.28);
+      color:#fff;
+      transition:border .18s ease;
+      font-size:16px;
+    }
+    input:focus, textarea:focus, select:focus{
+      border-color:rgba(230,75,124,.55);
+    }
+    textarea{min-height:92px; resize:vertical}
+
+    .row2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width: 520px){
+      .row2{grid-template-columns:1fr}
+    }
+
+    .help{
+      font-size:12px;
+      color:rgba(255,255,255,.62);
+      margin-top:6px;
+      line-height:1.5;
+    }
+
+    .previewWrap{
+      margin-top:14px;
+      padding:12px;
+      border-radius:18px;
+      background:rgba(0,0,0,.20);
+      border:1px dashed rgba(255,255,255,.18);
+    }
+    .previewTitle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:10px;
+      color:rgba(255,255,255,.78);
+      font-size:12px;
+    }
+    .memory-card{
+      position:relative;
+      border-radius:28px;
+      overflow:hidden;
+      background:transparent;
+      max-width:480px;
+      margin:auto;
+    }
+    .memory-card img, .memory-card video{
+      width:100%;
+      display:block;
+      border-radius:28px;
+      background:#000;
+      object-fit:cover;
+      max-height:330px;
+    }
+    .memory-info{
+      position:absolute;
+      left:14px; right:14px; bottom:14px;
+      background:rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.18);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-radius:20px;
+      padding:12px 14px 14px;
+      box-shadow:0 16px 40px rgba(0,0,0,.30);
+    }
+    .memory-info .date{
+      color:var(--pink);
+      font-size:16px;
+      font-weight:800;
+      display:block;
+      margin-bottom:4px;
+      letter-spacing:.2px;
+    }
+    .memory-info h3{
+      margin:0 0 6px;
+      font-size:16px;
+      line-height:1.2;
+    }
+    .memory-info p{
+      margin:0;
+      font-size:13px;
+      line-height:1.5;
+      color:rgba(255,255,255,.90);
+    }
+
+    .toolbar{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    .search{
+      flex:1;
+      min-width:220px;
+      position:relative;
+    }
+    .search input{ padding-left:38px; }
+    .search i{
+      position:absolute;
+      left:14px;
+      top:50%;
+      transform:translateY(-50%);
+      color:rgba(255,255,255,.55);
+    }
+
+    .list{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:12px;
+    }
+    @media (max-width: 980px){
+      .list{grid-template-columns:1fr}
+    }
+
+    .item{
+      padding:12px;
+      border-radius:18px;
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.12);
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+    }
+    .thumb{
+      width:92px;
+      height:92px;
+      border-radius:16px;
+      overflow:hidden;
+      flex:0 0 auto;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.25);
+      display:grid;
+      place-items:center;
+      position:relative;
+    }
+    .thumb img, .thumb video{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .badge{
+      position:absolute;
+      right:8px;
+      top:8px;
+      font-size:11px;
+      padding:6px 8px;
+      border-radius:999px;
+      background:rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.14);
+      color:rgba(255,255,255,.85);
+      backdrop-filter: blur(10px);
+    }
+    .meta{
+      flex:1;
+      min-width:0;
+    }
+    .metaTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .meta h4{
+      margin:0;
+      font-size:14px;
+      line-height:1.2;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .meta .dateText{
+      font-size:12px;
+      color:rgba(255,255,255,.65);
+      white-space:nowrap;
+    }
+    .meta .cap{
+      margin:8px 0 0;
+      font-size:12px;
+      line-height:1.45;
+      color:rgba(255,255,255,.78);
+      display:-webkit-box;
+      -webkit-line-clamp:3;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+    .itemBtns{
+      margin-top:10px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .mini{
+      padding:9px 11px;
+      border-radius:12px;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .msg{
+      margin-top:10px;
+      font-size:12px;
+      color:rgba(255,255,255,.75);
+    }
+    .msg.error{color:#ff6b6b}
+    .msg.success{color:#58f0a4}
+
+    .toast{
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      width:min(360px, calc(100% - 36px));
+      padding:12px 14px;
+      border-radius:18px;
+      background:rgba(20,20,24,.78);
+      border:1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow:0 24px 70px rgba(0,0,0,.6);
+      display:flex;
+      gap:12px;
+      align-items:center;
+      transform: translateY(16px);
+      opacity:0;
+      pointer-events:none;
+      transition: all .28s ease;
+      z-index:9999;
+    }
+    .toast.show{
+      transform: translateY(0);
+      opacity:1;
+    }
+    .tick{
+      width:34px;height:34px;
+      border-radius:12px;
+      display:grid;place-items:center;
+      background:rgba(88,240,164,.14);
+      border:1px solid rgba(88,240,164,.28);
+    }
+    .tick svg{ width:22px;height:22px; }
+    .tick path{
+      stroke: #58f0a4;
+      stroke-width: 3.2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 60;
+      stroke-dashoffset: 60;
+      animation: draw .65s ease forwards;
+    }
+    @keyframes draw{ to{ stroke-dashoffset: 0; } }
+    .toast .t1{font-weight:800; font-size:13px; margin:0;}
+    .toast .t2{font-size:12px; color:rgba(255,255,255,.72); margin:2px 0 0;}
+
+    .modalBackdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:9998;
+    }
+    .modalBackdrop.show{display:flex;}
+    .modal{
+      width:min(520px, 100%);
+      padding:16px;
+      border-radius:22px;
+    }
+    .modal h3{margin:0 0 6px; font-size:16px}
+    .modal p{margin:0 0 14px; color:rgba(255,255,255,.75); font-size:13px; line-height:1.55}
+    .modalBtns{display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap;}
+
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: 1fr !important; }
+      .panel { padding:14px; }
+      .topbar { flex-direction:column; align-items:flex-start; gap:10px; }
+    }
+
+    .fileUpload{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.fileUpload input[type="file"]{
+  display:none;
+}
+
+.fileBtn{
+  padding:11px 16px;
+  border-radius:14px;
+  cursor:pointer;
+  font-weight:700;
+  color:#fff;
+  background:linear-gradient(135deg, rgba(230,75,124,1), rgba(230,75,124,.75));
+  box-shadow:0 12px 30px rgba(230,75,124,.25);
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  transition:all .2s ease;
+  border:1px solid rgba(255,255,255,.15);
+}
+
+.fileBtn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 16px 40px rgba(230,75,124,.35);
+}
+
+.fileBtn.secondary{
+  background:rgba(255,255,255,.12);
+  box-shadow:none;
+}
+
+.fileName{
+  font-size:13px;
+  color:rgba(255,255,255,.65);
+  word-break:break-all;
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <!-- APP ONLY (NO LOGIN INSIDE) -->
+    <div id="appView" class="hidden">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo"><i class="fa-solid fa-infinity" style="color:white"></i></div>
+          <div>
+            <h1>Two Souls • Dashboard</h1>
+            <p>Upload memories, preview, edit, delete — all in one place.</p>
+          </div>
+        </div>
+
+        <div class="actions">
+            <a href="index.html" class="btn secondary" id="homeBtn" style="text-decoration:none;">
+    <i class="fa-solid fa-house"></i> Home
+  </a>
+          <div class="pill" id="userPill"><i class="fa-solid fa-user"></i> <span id="userEmail">—</span></div>
+          <button id="logoutBtn" class="btn secondary">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+          </button>
+        </div>
+      </div>
+
+      <div class="grid">
+
+        <!-- LEFT: FORM -->
+        <div class="glass panel">
+          <div class="sectionTitle">
+            <h2 id="formTitle">Create Memory</h2>
+            <button id="cancelEditBtn" class="btn secondary mini hidden"><i class="fa-solid fa-xmark"></i> Cancel</button>
+          </div>
+
+
+
+          <div class="row2">
+            <div class="field">
+              <label>Date</label>
+              <input id="date_text" type="text" placeholder="e.g. 1-11-2025" />
+            </div>
+            <div class="field">
+              <label>Title</label>
+              <input id="title" type="text" placeholder="Memory title" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Caption</label>
+            <textarea id="caption" placeholder="Write something sweet..."></textarea>
+          </div>
+
+          <div class="field">
+            <label>Media file (required for new, optional for edit)</label>
+            <div class="fileUpload">
+  <input id="mediaFile" type="file" />
+  <label for="mediaFile" class="fileBtn">
+    <i class="fa-solid fa-image"></i>
+    <span>Select Media</span>
+  </label>
+  <span id="mediaFileName" class="fileName">No file selected</span>
+</div>
+
+            <div class="help">Tip: For edit mode you can keep the current media and just change text.</div>
+          </div>
+
+          <div class="field" id="posterWrap" style="display:none;">
+            <label>Poster (optional for video)</label>
+            <div class="fileUpload">
+  <input id="posterFile" type="file" />
+  <label for="posterFile" class="fileBtn secondary">
+    <i class="fa-solid fa-photo-film"></i>
+    <span>Select Poster</span>
+  </label>
+  <span id="posterFileName" class="fileName">No file selected</span>
+</div>
+
+          </div>
+
+          <button id="saveBtn" class="btn" style="width:100%; justify-content:center;">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <span id="saveBtnText">Upload Memory</span>
+          </button>
+
+          <div id="formMsg" class="msg"></div>
+
+          <!-- PREVIEW -->
+          <div class="previewWrap">
+            <div class="previewTitle">
+              <span><i class="fa-regular fa-eye"></i> Live Preview</span>
+              <span style="color:rgba(255,255,255,.55); font-size:11px;">(before upload)</span>
+            </div>
+
+            <div class="memory-card" id="previewCard">
+              <img id="previewMedia" src="" alt="" style="display:none;">
+              <video id="previewVideo" style="display:none;" muted playsinline></video>
+
+              <div class="memory-info">
+                <span class="date" id="pvDate">—</span>
+                <h3 id="pvTitle">Your title here</h3>
+                <p id="pvCaption">Your caption will appear here…</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: LIST -->
+        <div class="glass panel">
+          <div class="sectionTitle">
+            <h2>Memories in Database</h2>
+            <button id="refreshBtn" class="btn secondary mini"><i class="fa-solid fa-rotate"></i> Refresh</button>
+          </div>
+
+          <div class="toolbar">
+            <div class="search">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input id="search" placeholder="Search title/caption/date..." />
+            </div>
+            <div class="pill"><i class="fa-solid fa-layer-group"></i> <span id="count">0</span></div>
+          </div>
+
+          <div id="list" class="list"></div>
+          <div id="listMsg" class="msg"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast">
+    <div class="tick">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20 6L9 17l-5-5"></path>
+      </svg>
+    </div>
+    <div>
+      <p class="t1" id="toastTitle">Saved ✅</p>
+      <p class="t2" id="toastText">Your memory is now live.</p>
+    </div>
+  </div>
+
+  <!-- Confirm modal -->
+  <div id="modalBackdrop" class="modalBackdrop">
+    <div class="glass modal">
+      <h3>Delete memory?</h3>
+      <p>This will remove it from the database and delete the file from storage. This action cannot be undone.</p>
+      <div class="modalBtns">
+        <button id="modalCancel" class="btn secondary mini">Cancel</button>
+        <button id="modalConfirm" class="btn danger mini"><i class="fa-solid fa-trash"></i> Delete</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // =============================
+  // CONFIG
+  // =============================
+  const SUPABASE_URL = "https://bgfmlaawqkldjxuztfyw.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_AGIzngMZ121kB4oLhWICeg_koN3su9h";
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+  // =============================
+  // Elements
+  // =============================
+  const appView = document.getElementById("appView");
+
+  const formMsg = document.getElementById("formMsg");
+  const listMsg = document.getElementById("listMsg");
+  const userEmail = document.getElementById("userEmail");
+
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  const dateEl = document.getElementById("date_text");
+  const titleEl = document.getElementById("title");
+  const capEl = document.getElementById("caption");
+  const mediaEl = document.getElementById("mediaFile");
+  const posterEl = document.getElementById("posterFile");
+  const posterWrap = document.getElementById("posterWrap");
+  const saveBtn = document.getElementById("saveBtn");
+  const saveBtnText = document.getElementById("saveBtnText");
+  const formTitle = document.getElementById("formTitle");
+  const cancelEditBtn = document.getElementById("cancelEditBtn");
+
+  const pvDate = document.getElementById("pvDate");
+  const pvTitle = document.getElementById("pvTitle");
+  const pvCaption = document.getElementById("pvCaption");
+  const previewImg = document.getElementById("previewMedia");
+  const previewVideo = document.getElementById("previewVideo");
+
+  const listEl = document.getElementById("list");
+  const searchEl = document.getElementById("search");
+  const refreshBtn = document.getElementById("refreshBtn");
+  const countEl = document.getElementById("count");
+
+  const toast = document.getElementById("toast");
+  const toastTitle = document.getElementById("toastTitle");
+  const toastText = document.getElementById("toastText");
+
+  const modalBackdrop = document.getElementById("modalBackdrop");
+  const modalCancel = document.getElementById("modalCancel");
+  const modalConfirm = document.getElementById("modalConfirm");
+
+  // =============================
+  // State
+  // =============================
+  let isSaving = false;
+  let editingId = null;
+  let editingMediaPath = null;
+  let editingPosterPath = null;
+
+  let allMemories = [];
+  let pendingDelete = null;
+
+  // =============================
+  // Helpers
+  // =============================
+  function setMsg(el, text, kind){
+    el.textContent = text || "";
+    el.className = "msg" + (kind ? " " + kind : "");
+  }
+
+function safeName(name){
+  return (name || "file").replace(/\s+/g,"_").replace(/[^\w.\-]/g,"");
+}
+
+function detectFileType(file){
+  if(!file) return null;
+
+  if(file.type.startsWith("image/")) return "image";
+  if(file.type.startsWith("video/")) return "video";
+
+  return null;
+}
+
+
+  function toggleSaving(on){
+    isSaving = on;
+    saveBtn.disabled = on;
+    refreshBtn.disabled = on;
+    saveBtnText.textContent = editingId
+      ? (on ? "Updating..." : "Update Memory")
+      : (on ? "Uploading..." : "Upload Memory");
+  }
+
+  function showToast(t1, t2){
+    toastTitle.textContent = t1 || "Saved ✅";
+    toastText.textContent = t2 || "Done.";
+    toast.classList.add("show");
+    const tick = toast.querySelector(".tick");
+    tick.innerHTML = `
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20 6L9 17l-5-5"></path>
+      </svg>
+    `;
+    setTimeout(() => toast.classList.remove("show"), 2400);
+  }
+
+  function storagePublicUrl(path){
+    if(!path) return "";
+    return sb.storage.from("memories").getPublicUrl(path).data.publicUrl || "";
+  }
+
+  function setModeCreate(){
+    editingId = null;
+    editingMediaPath = null;
+    editingPosterPath = null;
+
+    formTitle.textContent = "Create Memory";
+    cancelEditBtn.classList.add("hidden");
+    setMsg(formMsg, "", "");
+    resetFormFieldsOnly();
+  }
+
+  function resetFormFieldsOnly(){
+    dateEl.value = "";
+    titleEl.value = "";
+    capEl.value = "";
+    mediaEl.value = "";
+    posterEl.value = "";
+    posterWrap.style.display = "none";
+    applyPreview(); // clear preview
+  }
+
+  function setModeEdit(item){
+    editingId = item.id;
+    editingMediaPath = item.media_path;
+    editingPosterPath = item.poster_path;
+
+    formTitle.textContent = "Edit Memory";
+    cancelEditBtn.classList.remove("hidden");
+
+    dateEl.value = item.date_text || "";
+    titleEl.value = item.title || "";
+    capEl.value = item.caption || "";
+
+posterWrap.style.display = item.type === "video" ? "block" : "none";
+    mediaEl.value = "";
+    posterEl.value = "";
+
+    applyPreviewFromExisting(item);
+
+    setMsg(formMsg, "Edit mode: change text, or choose a new file to replace media.", "");
+  }
+
+function applyPreview(){
+
+  pvDate.textContent = dateEl.value.trim() || "—";
+  pvTitle.textContent = titleEl.value.trim() || "Your title here";
+  pvCaption.textContent = capEl.value.trim() || "Your caption will appear here…";
+
+  const file = mediaEl.files && mediaEl.files[0];
+
+  if(!file){
+    previewImg.style.display = "none";
+    previewVideo.style.display = "none";
+    posterWrap.style.display = "none";
+    return;
+  }
+
+  const detectedType = detectFileType(file);
+
+  if(detectedType === "video"){
+    previewImg.style.display = "none";
+    previewVideo.style.display = "block";
+    previewVideo.src = URL.createObjectURL(file);
+    previewVideo.load();
+    posterWrap.style.display = "block";
+  } else {
+    previewVideo.style.display = "none";
+    previewImg.style.display = "block";
+    previewImg.src = URL.createObjectURL(file);
+    posterWrap.style.display = "none";
+  }
+}
+
+
+  function applyPreviewFromExisting(item){
+    pvDate.textContent = item.date_text || "—";
+    pvTitle.textContent = item.title || "—";
+    pvCaption.textContent = item.caption || "—";
+
+    const type = item.type || "image";
+    if(type === "video"){
+      previewImg.style.display = "none";
+      previewVideo.style.display = "block";
+      previewVideo.src = storagePublicUrl(item.media_path);
+      previewVideo.load();
+    } else {
+      previewVideo.style.display = "none";
+      previewImg.style.display = "block";
+      previewImg.src = storagePublicUrl(item.media_path);
+    }
+  }
+
+  function openDeleteModal(item){
+    pendingDelete = item;
+    modalBackdrop.classList.add("show");
+  }
+  function closeDeleteModal(){
+    pendingDelete = null;
+    modalBackdrop.classList.remove("show");
+  }
+
+  // =============================
+  // Auth Guard (IMPORTANT)
+  // =============================
+  (async () => {
+    const { data } = await sb.auth.getSession();
+    if(!data.session){
+      window.location.replace("login.html");
+      return;
+    }
+
+    userEmail.textContent = data.session.user.email;
+    appView.classList.remove("hidden");
+
+    applyPreview();
+    await loadList();
+  })();
+
+  // Logout
+  logoutBtn.addEventListener("click", async () => {
+    await sb.auth.signOut();
+    window.location.replace("login.html");
+  });
+
+  // =============================
+  // Form interactions
+  // =============================
+
+  [dateEl, titleEl, capEl].forEach(el => el.addEventListener("input", applyPreview));
+  mediaEl.addEventListener("change", applyPreview);
+  
+      const mediaFileName = document.getElementById("mediaFileName");
+const posterFileName = document.getElementById("posterFileName");
+
+mediaEl.addEventListener("change", () => {
+  if(mediaEl.files.length){
+    mediaFileName.textContent = mediaEl.files[0].name;
+  } else {
+    mediaFileName.textContent = "No file selected";
+  }
+});
+
+posterEl.addEventListener("change", () => {
+  if(posterEl.files.length){
+    posterFileName.textContent = posterEl.files[0].name;
+  } else {
+    posterFileName.textContent = "No file selected";
+  }
+});
+
+  cancelEditBtn.addEventListener("click", () => {
+    setModeCreate();
+  });
+
+  // =============================
+  // CRUD: Load list
+  // =============================
+  async function loadList(){
+    setMsg(listMsg, "Loading...", "");
+    listEl.innerHTML = "";
+
+    const { data, error } = await sb
+      .from("memories")
+      .select("*")
+      .order("created_at", { ascending: true });
+
+    if(error){
+      console.error(error);
+      setMsg(listMsg, error.message, "error");
+      return;
+    }
+
+    allMemories = data || [];
+    renderList();
+    setMsg(listMsg, allMemories.length ? "" : "No memories yet. Upload your first one ❤️", "");
+  }
+
+  function renderList(){
+    const q = (searchEl.value || "").trim().toLowerCase();
+    const filtered = allMemories.filter(m => {
+      if(!q) return true;
+      const hay = `${m.title||""} ${m.caption||""} ${m.date_text||""}`.toLowerCase();
+      return hay.includes(q);
+    });
+
+    countEl.textContent = String(filtered.length);
+    listEl.innerHTML = "";
+
+    filtered.forEach(item => {
+      const thumbUrl = storagePublicUrl(item.media_path);
+      const posterUrl = storagePublicUrl(item.poster_path);
+
+      const el = document.createElement("div");
+      el.className = "item";
+
+      const thumb = document.createElement("div");
+      thumb.className = "thumb";
+
+      if(item.type === "video"){
+        thumb.innerHTML = posterUrl
+          ? `<img src="${posterUrl}" alt=""><span class="badge">VIDEO</span>`
+          : `<video src="${thumbUrl}" muted playsinline></video><span class="badge">VIDEO</span>`;
+      } else {
+        thumb.innerHTML = `<img src="${thumbUrl}" alt=""><span class="badge">IMAGE</span>`;
+      }
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      meta.innerHTML = `
+        <div class="metaTop">
+          <h4 title="${(item.title||"").replace(/"/g,'&quot;')}">${item.title || "—"}</h4>
+          <span class="dateText">${item.date_text || ""}</span>
+        </div>
+        <div class="cap">${item.caption || ""}</div>
+        <div class="itemBtns">
+          <button class="btn secondary mini" data-act="edit"><i class="fa-solid fa-pen"></i> Edit</button>
+          <button class="btn danger mini" data-act="delete"><i class="fa-solid fa-trash"></i> Delete</button>
+        </div>
+      `;
+
+      meta.querySelector('[data-act="edit"]').addEventListener("click", () => {
+        setModeEdit(item);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      meta.querySelector('[data-act="delete"]').addEventListener("click", () => openDeleteModal(item));
+
+      el.appendChild(thumb);
+      el.appendChild(meta);
+      listEl.appendChild(el);
+    });
+  }
+
+  searchEl.addEventListener("input", renderList);
+  refreshBtn.addEventListener("click", loadList);
+
+  // =============================
+  // Storage helpers
+  // =============================
+  async function uploadFileToStorage(file){
+    const path = `${Date.now()}_${safeName(file.name)}`;
+    const { error } = await sb.storage.from("memories").upload(path, file, { upsert:false });
+    if(error) throw new Error(error.message);
+    return path;
+  }
+
+  async function deleteStoragePath(path){
+    if(!path) return;
+    const { error } = await sb.storage.from("memories").remove([path]);
+    if(error) console.warn("Storage delete failed:", error.message);
+  }
+
+  // =============================
+  // Create / Update
+  // =============================
+  saveBtn.addEventListener("click", async () => {
+    if(isSaving) return;
+    setMsg(formMsg, "", "");
+
+
+
+
+    const date_text = dateEl.value.trim();
+    const title = titleEl.value.trim();
+    const caption = capEl.value.trim();
+    const mediaFile = mediaEl.files && mediaEl.files[0];
+    let type;
+
+if(mediaFile){
+  type = detectFileType(mediaFile);
+} else {
+  type = editingMediaPath && editingMediaPath.match(/\.(mp4|webm|mov)$/i)
+    ? "video"
+    : "image";
+}
+
+    const posterFile = posterEl.files && posterEl.files[0];
+
+    if(!date_text || !title || !caption){
+      setMsg(formMsg, "Please fill Date, Title, and Caption.", "error");
+      return;
+    }
+
+    if(!editingId && !mediaFile){
+      setMsg(formMsg, "Please choose a media file to upload.", "error");
+      return;
+    }
+
+    toggleSaving(true);
+
+    try{
+      if(!editingId){
+        const media_path = await uploadFileToStorage(mediaFile);
+
+        let poster_path = null;
+        if(type === "video" && posterFile){
+          poster_path = await uploadFileToStorage(posterFile);
+        }
+
+        const { error } = await sb.from("memories").insert([{
+          type, date_text, title, caption, media_path, poster_path
+        }]);
+        if(error) throw new Error(error.message);
+
+        showToast("Uploaded ✅", "Your memory is now live on the website.");
+        setModeCreate();
+        await loadList();
+        return;
+      }
+
+      // Update mode
+      let media_path = editingMediaPath;
+      let poster_path = editingPosterPath;
+
+      // If changed to image, remove poster
+      if(type !== "video" && poster_path){
+        await deleteStoragePath(poster_path);
+        poster_path = null;
+      }
+
+      // Replace media if new file chosen
+      if(mediaFile){
+        const newPath = await uploadFileToStorage(mediaFile);
+        await deleteStoragePath(media_path);
+        media_path = newPath;
+      }
+
+      // Replace poster if chosen
+      if(type === "video" && posterFile){
+        const newPoster = await uploadFileToStorage(posterFile);
+        if(poster_path) await deleteStoragePath(poster_path);
+        poster_path = newPoster;
+      }
+
+      const { error: upErr } = await sb
+        .from("memories")
+        .update({ type, date_text, title, caption, media_path, poster_path })
+        .eq("id", editingId);
+
+      if(upErr) throw new Error(upErr.message);
+
+      showToast("Updated ✅", "Changes saved successfully.");
+      setModeCreate();
+      await loadList();
+
+    } catch(err){
+      console.error(err);
+      setMsg(formMsg, err.message || "Something went wrong.", "error");
+    } finally{
+      toggleSaving(false);
+    }
+  });
+
+  // =============================
+  // Delete flow
+  // =============================
+  modalCancel.addEventListener("click", closeDeleteModal);
+  modalBackdrop.addEventListener("click", (e) => {
+    if(e.target === modalBackdrop) closeDeleteModal();
+  });
+
+  modalConfirm.addEventListener("click", async () => {
+    if(!pendingDelete || isSaving) return;
+
+    toggleSaving(true);
+
+    try{
+      const { error } = await sb.from("memories").delete().eq("id", pendingDelete.id);
+      if(error) throw new Error(error.message);
+
+      await deleteStoragePath(pendingDelete.media_path);
+      await deleteStoragePath(pendingDelete.poster_path);
+
+      closeDeleteModal();
+      showToast("Deleted ✅", "Memory removed successfully.");
+      await loadList();
+
+      if(editingId === pendingDelete.id){
+        setModeCreate();
+      }
+
+    } catch(err){
+      console.error(err);
+      setMsg(listMsg, err.message || "Delete failed.", "error");
+      closeDeleteModal();
+    } finally{
+      toggleSaving(false);
+    }
+
+
+
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Two Souls • Login</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+<style>
+:root{
+  --bg:#07070a;
+  --pink:#e64b7c;
+  --text:#fff;
+  --muted:rgba(255,255,255,.7);
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:system-ui;
+  color:var(--text);
+  background:
+    radial-gradient(800px 500px at 20% 10%, rgba(230,75,124,.25), transparent 60%),
+    radial-gradient(700px 600px at 80% 40%, rgba(255,255,255,.08), transparent 60%),
+    var(--bg);
+}
+
+.card{
+  width:92%;
+  max-width:420px;
+  padding:28px;
+  border-radius:26px;
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 25px 80px rgba(0,0,0,.6);
+  animation:fadeIn .6s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(20px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+.logo{
+  width:60px;
+  height:60px;
+  border-radius:18px;
+  background:linear-gradient(135deg, rgba(230,75,124,.95), rgba(255,255,255,.25));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:18px;
+  box-shadow:0 20px 50px rgba(230,75,124,.35);
+}
+
+h2{
+  margin:0 0 6px;
+}
+
+p{
+  margin:0 0 20px;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.6;
+}
+
+input{
+  width:100%;
+  padding:14px;
+  margin-bottom:14px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(0,0,0,.35);
+  color:white;
+  font-size:16px; /* prevents iPhone zoom */
+  transition:.2s;
+}
+
+input:focus{
+  border-color:rgba(230,75,124,.6);
+  outline:none;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  border-radius:16px;
+  border:none;
+  background:linear-gradient(135deg, rgba(230,75,124,1), rgba(230,75,124,.75));
+  color:white;
+  font-weight:700;
+  font-size:16px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+button:hover{
+  opacity:.9;
+}
+
+.msg{
+  margin-top:12px;
+  font-size:13px;
+}
+
+.error{color:#ff6b6b;}
+.success{color:#58f0a4;}
+
+.footer{
+  margin-top:20px;
+  text-align:center;
+  font-size:12px;
+  color:rgba(255,255,255,.45);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <div class="logo">
+    <i class="fa-solid fa-heart" style="color:white;font-size:20px;"></i>
+  </div>
+
+  <h2>Memories Dashboard</h2>
+  <p>Login to manage your private memories.</p>
+
+  <input id="email" type="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+
+  <button id="loginBtn">
+    <i class="fa-solid fa-right-to-bracket"></i> Login
+  </button>
+
+  <div id="msg" class="msg"></div>
+
+  <div class="footer">
+    Two Souls • Private Access
+  </div>
+
+</div>
+
+<script>
+
+const SUPABASE_URL = "https://bgfmlaawqkldjxuztfyw.supabase.co";
+const SUPABASE_KEY = "sb_publishable_AGIzngMZ121kB4oLhWICeg_koN3su9h";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// 🔐 If already logged in → go to dashboard
+(async () => {
+  const { data } = await sb.auth.getSession();
+  if (data.session) {
+    window.location.replace("admin.html");
+  }
+})();
+
+const msg = document.getElementById("msg");
+
+document.getElementById("loginBtn").addEventListener("click", async () => {
+
+  msg.textContent = "";
+  msg.className = "msg";
+
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  if(!email || !password){
+    msg.textContent = "Please enter email and password.";
+    msg.classList.add("error");
+    return;
+  }
+
+  const { error } = await sb.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if(error){
+    msg.textContent = error.message;
+    msg.classList.add("error");
+    return;
+  }
+
+  msg.textContent = "Login successful...";
+  msg.classList.add("success");
+
+  setTimeout(()=>{
+    window.location.replace("admin.html");
+  },600);
+
+});
+
+</script>
+
+</body>
+</html>

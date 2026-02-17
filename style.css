@@ -572,3 +572,58 @@ body::before {
     opacity: 0;
   }
 }
+
+
+
+
+
+
+/* ================= DASHBOARD FLOATING BUTTON ================= */
+
+.dashboard-btn {
+  position: fixed;
+  bottom: 22px;
+  left: 18px;
+  z-index: 9999;
+
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+
+  border: 1px solid rgba(255,255,255,0.25);
+
+  color: #e64b7c;
+  font-size: 18px;
+  text-decoration: none;
+
+  box-shadow:
+    0 12px 30px rgba(0,0,0,0.35),
+    inset 0 0 12px rgba(255,255,255,0.2);
+
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.dashboard-btn:hover {
+  transform: scale(1.08);
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.dashboard-btn:active {
+  transform: scale(0.92);
+}
+
+/* Desktop spacing */
+@media (min-width: 768px) {
+  .dashboard-btn {
+    bottom: 28px;
+    left: 28px;
+  }
+}

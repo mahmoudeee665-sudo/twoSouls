@@ -31,8 +31,97 @@
 <button id="musicToggle" class="music-btn hidden" aria-label="music toggle">
   <i style="color: #e64b7c;" class="fa-solid fa-pause"></i>
 </button>
+<!-- 🔐 Dashboard Button -->
+<a href="admin.html" class="dashboard-btn" aria-label="Dashboard">
+  <i class="fa-solid fa-lock"></i>
+</a>
+
 
 <div class="hearts-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://bgfmlaawqkldjxuztfyw.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_AGIzngMZ121kB4oLhWICeg_koN3su9h";
+
+const sb = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+async function loadMemories() {
+
+  const { data, error } = await sb
+    .from("memories")
+    .select("*")
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  const container = document.getElementById("newMemoriesContainer");
+
+  data.forEach(item => {
+
+    const card = document.createElement("div");
+    card.className = "memory-card" + (item.type === "video" ? " video-card" : "");
+
+    if (item.type === "video") {
+      const { data: pub } = sb.storage.from("memories").getPublicUrl(item.media_path);
+      const posterUrl = item.poster_path
+        ? sb.storage.from("memories").getPublicUrl(item.poster_path).data.publicUrl
+        : "";
+
+      card.innerHTML = `
+        <video src="${pub.publicUrl}" poster="${posterUrl}" preload="metadata" muted playsinline></video>
+        <button class="video-play-btn" aria-label="play video">
+          <i class="fa-solid fa-play"></i>
+        </button>
+      `;
+    } else {
+      const { data: pub } = sb.storage.from("memories").getPublicUrl(item.media_path);
+      card.innerHTML = `<img src="${pub.publicUrl}" alt="">`;
+    }
+
+    const info = document.createElement("div");
+    info.className = "memory-info";
+    info.innerHTML = `
+      <span class="date">${item.date_text}</span>
+      <h3>${item.title}</h3>
+      <p>${item.caption}</p>
+    `;
+
+    card.appendChild(info);
+    container.appendChild(card);
+  });
+
+  // Video controls
+  document.querySelectorAll(".video-card").forEach(vc => {
+    const v = vc.querySelector("video");
+    const btn = vc.querySelector(".video-play-btn");
+    if (!v || !btn) return;
+
+    btn.addEventListener("click", () => {
+      v.play();
+      vc.classList.add("playing");
+      if (v.requestFullscreen) v.requestFullscreen();
+      else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();
+    });
+
+    v.addEventListener("pause", () => vc.classList.remove("playing"));
+    v.addEventListener("ended", () => vc.classList.remove("playing"));
+  });
+}
+
+loadMemories();
+</script>
+
+
+
+
 
 <body>
 
@@ -81,7 +170,7 @@
   </section>
 
   <!-- 🖼️ MEMORIES -->
-  <section class="memories">
+<section class="memories" >
 
 <div class="memory-card">
   <img src="img/1.jpg" alt="">
@@ -154,6 +243,10 @@
 </div>
 
   </section>
+
+
+  <section class="memories" id="newMemoriesContainer"></section>
+
 
   <!-- 💌 FINAL MESSAGE -->
   <section class="final">
