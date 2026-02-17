@@ -547,7 +547,36 @@
           </div>
 
 
+          <div class="field">
+            <label>Media file (required for new, optional for edit)</label>
+            <div class="fileUpload">
+  <input id="mediaFile" type="file" />
+  <label for="mediaFile" class="fileBtn">
+    <i class="fa-solid fa-image"></i>
+    <span>Select Media</span>
+  </label>
+  <span id="mediaFileName" class="fileName">No file selected</span>
+</div>
 
+          <div class="previewWrap">
+            <div class="previewTitle">
+              <span><i class="fa-regular fa-eye"></i> Live Preview</span>
+              <span style="color:rgba(255,255,255,.55); font-size:11px;">(before upload)</span>
+            </div>
+
+            <div class="memory-card" id="previewCard">
+              <img id="previewMedia" src="" alt="" style="display:none;">
+              <video id="previewVideo" style="display:none;" muted playsinline></video>
+
+              <div class="memory-info">
+                <span class="date" id="pvDate">—</span>
+                <h3 id="pvTitle">Your title here</h3>
+                <p id="pvCaption">Your caption will appear here…</p>
+              </div>
+            </div>
+          </div>
+
+          </div>
           <div class="row2">
             <div class="field">
               <label>Date</label>
@@ -599,23 +628,7 @@
           <div id="formMsg" class="msg"></div>
 
           <!-- PREVIEW -->
-          <div class="previewWrap">
-            <div class="previewTitle">
-              <span><i class="fa-regular fa-eye"></i> Live Preview</span>
-              <span style="color:rgba(255,255,255,.55); font-size:11px;">(before upload)</span>
-            </div>
 
-            <div class="memory-card" id="previewCard">
-              <img id="previewMedia" src="" alt="" style="display:none;">
-              <video id="previewVideo" style="display:none;" muted playsinline></video>
-
-              <div class="memory-info">
-                <span class="date" id="pvDate">—</span>
-                <h3 id="pvTitle">Your title here</h3>
-                <p id="pvCaption">Your caption will appear here…</p>
-              </div>
-            </div>
-          </div>
         </div>
 
         <!-- RIGHT: LIST -->
