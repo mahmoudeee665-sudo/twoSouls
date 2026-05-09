@@ -76,10 +76,12 @@ async function loadMemories() {
         : "";
 
       card.innerHTML = `
-        <video src="${pub.publicUrl}" poster="${posterUrl}" preload="metadata" muted playsinline></video>
-        <button class="video-play-btn" aria-label="play video">
-          <i class="fa-solid fa-play"></i>
-        </button>
+        <div class="video-wrapper">
+          <video src="${pub.publicUrl}" poster="${posterUrl}" preload="metadata" muted playsinline></video>
+          <button class="video-play-btn" aria-label="play video">
+            <i class="fa-solid fa-play"></i>
+          </button>
+        </div>
       `;
     } else {
       const { data: pub } = sb.storage.from("memories").getPublicUrl(item.media_path);
@@ -215,19 +217,21 @@ loadMemories();
 
 
 <div class="memory-card video-card">
-  <video
-    id="memoriesVideo"
-    src="video/memories.mp4"
-    poster="img/videobg.jpeg"
-    preload="metadata"
-    muted
-    playsinline
-  ></video>
+  <div class="video-wrapper">
+    <video
+      id="memoriesVideo"
+      src="video/memories.mp4"
+      poster="img/videobg.jpeg"
+      preload="metadata"
+      muted
+      playsinline
+    ></video>
 
-  <!-- Play Button -->
-  <button class="video-play-btn" aria-label="play video">
-    <i class="fa-solid fa-play"></i>
-  </button>
+    <!-- Play Button -->
+    <button class="video-play-btn" aria-label="play video">
+      <i class="fa-solid fa-play"></i>
+    </button>
+  </div>
 
   <div class="memory-info">
     <span class="date">

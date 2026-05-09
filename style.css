@@ -458,6 +458,12 @@ body::before {
   background: rgba(255,255,255,0.35);
 }
 
+/* Video wrapper to keep play button anchored to video only */
+.video-card .video-wrapper {
+  position: relative;
+  width: 100%;
+}
+
 /* Hide play button when video playing */
 .video-card.playing .video-play-btn {
   opacity: 0;
