@@ -195,18 +195,54 @@ loadMemories();
   <!-- ⏳ TIMELINE -->
   <section class="timeline">
     <div class="timeline-card">
-<span class="heart">
-<i class="fa-solid fa-infinity fa-2xl" style="color: #e64b7c;"></i></span>
-      <h4>OUR ETERNAL TIMELINE</h4>
+
+      <div class="tl-stars"></div>
+
+      <div class="tl-header">
+        <span class="tl-line-left"></span>
+        <span class="tl-icon"><i class="fa-solid fa-infinity"></i></span>
+        <span class="tl-line-right"></span>
+      </div>
+      <h4 class="tl-title">OUR ETERNAL TIMELINE</h4>
 
       <div class="time-grid">
-        <div><span id="years">0</span><small>سنة</small></div>
-        <div><span id="months">0</span><small>شهر</small></div>
-        <div><span id="days">0</span><small>يوم</small></div>
-        <div><span id="hours">0</span><small>ساعة</small></div>
-        <div><span id="minutes">0</span><small>دقيقة</small></div>
-        <div class="highlight"><span id="seconds">0</span><small>ثانية</small></div>
+        <div class="time-cell" style="--i:0; --o:6s">
+          <div class="cell-aura"></div>
+          <span id="years">0</span>
+          <small>سنة</small>
+        </div>
+        <div class="time-cell" style="--i:1; --o:5s">
+          <div class="cell-aura"></div>
+          <span id="months">0</span>
+          <small>شهر</small>
+        </div>
+        <div class="time-cell" style="--i:2; --o:4s">
+          <div class="cell-aura"></div>
+          <span id="days">0</span>
+          <small>يوم</small>
+        </div>
+        <div class="time-cell" style="--i:3; --o:3s">
+          <div class="cell-aura"></div>
+          <span id="hours">0</span>
+          <small>ساعة</small>
+        </div>
+        <div class="time-cell" style="--i:4; --o:2s">
+          <div class="cell-aura"></div>
+          <span id="minutes">0</span>
+          <small>دقيقة</small>
+        </div>
+        <div class="time-cell highlight glow" style="--i:5; --o:1s">
+          <div class="cell-aura"></div>
+          <div class="sonar-ring"></div>
+          <span id="seconds">0</span>
+          <small>ثانية</small>
+        </div>
       </div>
+
+      <div class="tl-footer">
+        <span class="tl-footnote">وتبقى الذكرى نجمة تُنير الدرب</span>
+      </div>
+
     </div>
   </section>
 
@@ -234,7 +270,7 @@ loadMemories();
     <span class="date">25-11-2025</span>
     <h3>أحلى يوم لينا</h3>
     <p>
-      اليوم ده كان من أحلى الأيام اللي عدّت علينا，
+      اليوم ده كان من أحلى الأيام اللي عدّت علينا،
       اتطمنّا فيه لبعض اوي وحسّينا قد إيه وجودنا مع بعض مريح
       وكان مميز أكتر لأنه كان يوم عيد ميلادك
     </p>  </div>
@@ -277,7 +313,7 @@ loadMemories();
 
   <div class="memory-info">
     <span class="date">
-      <i class="fa-solid fa-infinity fa-xl"></i>
+      <i class="fa-solid xl fa-infinity fa-2xl"></i>
     </span>
     <h3>ذكريات عمري ما هنساها</h3>
     <p>
