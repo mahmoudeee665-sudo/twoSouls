@@ -11,6 +11,9 @@
   <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 
+  <!-- Shared styles -->
+  <link rel="stylesheet" href="style.css">
+
   <style>
     :root{
       --bg:#07070a;
@@ -31,11 +34,7 @@
       min-height:100vh;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color:var(--text);
-      background:
-        radial-gradient(1000px 600px at 20% 10%, rgba(230,75,124,.20), transparent 55%),
-        radial-gradient(900px 700px at 90% 30%, rgba(255,255,255,.08), transparent 60%),
-        radial-gradient(700px 700px at 50% 110%, rgba(230,75,124,.16), transparent 60%),
-        var(--bg);
+      background: var(--bg);
     }
 
     .hidden{display:none !important;}
@@ -224,6 +223,7 @@
       font-size:12px;
     }
     .memory-card{
+      opacity:1;
       position:relative;
       border-radius:28px;
       overflow:hidden;
@@ -513,6 +513,16 @@
 </head>
 
 <body>
+
+<!-- 🌌 Animated Background Orbs -->
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
+</div>
+<div class="bg-noise"></div>
+
   <div class="wrap">
 
     <!-- APP ONLY (NO LOGIN INSIDE) -->
@@ -894,6 +904,13 @@ function applyPreview(){
 
     applyPreview();
     await loadList();
+
+    // Restore search query from sessionStorage
+    const saved = sessionStorage.getItem("adminSearch");
+    if (saved) {
+      searchEl.value = saved;
+      renderList();
+    }
   })();
 
   // Logout
@@ -1011,7 +1028,10 @@ posterEl.addEventListener("change", () => {
     });
   }
 
-  searchEl.addEventListener("input", renderList);
+  searchEl.addEventListener("input", () => {
+    sessionStorage.setItem("adminSearch", searchEl.value);
+    renderList();
+  });
   refreshBtn.addEventListener("click", loadList);
 
   // =============================

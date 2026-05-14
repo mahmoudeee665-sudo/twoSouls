@@ -23,8 +23,8 @@
 </head>
 
 <!-- 🎵 Background Music -->
-<audio id="bgMusic" preload="auto">
-  <source src="music/song.mp3" type="audio/mpeg">
+<audio id="bgMusic" preload="metadata">
+  <source src="music/Adele - Lovesong (Lyric Video) (mp3cut.net).mp3" type="audio/mpeg">
 </audio>
 
 <!-- 🎵 Floating Music Button -->
@@ -81,6 +81,9 @@ async function loadMemories() {
           <button class="video-play-btn" aria-label="play video">
             <i class="fa-solid fa-play"></i>
           </button>
+          <button class="video-sound-btn" aria-label="toggle sound">
+            <i class="fa-solid fa-volume-xmark"></i>
+          </button>
         </div>
       `;
     } else {
@@ -100,6 +103,20 @@ async function loadMemories() {
     container.appendChild(card);
   });
 
+  // Stagger scroll-reveal delay per card
+  document.querySelectorAll(".memory-card").forEach((c, i) => {
+    c.style.animationDelay = `${i * 0.08}s`;
+  });
+
+  // Observe newly added cards for scroll animation
+  (function watchCards(){
+    if (window.cardObserver) {
+      document.querySelectorAll(".memory-card:not(.show)").forEach(c => window.cardObserver.observe(c));
+    } else {
+      setTimeout(watchCards, 100);
+    }
+  })();
+
   // Video controls
   document.querySelectorAll(".video-card").forEach(vc => {
     const v = vc.querySelector("video");
@@ -115,6 +132,16 @@ async function loadMemories() {
 
     v.addEventListener("pause", () => vc.classList.remove("playing"));
     v.addEventListener("ended", () => vc.classList.remove("playing"));
+
+    // Sound toggle
+    const sb = vc.querySelector(".video-sound-btn");
+    if (sb) {
+      sb.addEventListener("click", (e) => {
+        e.stopPropagation();
+        v.muted = !v.muted;
+        sb.querySelector("i").className = v.muted ? "fa-solid fa-volume-xmark" : "fa-solid fa-volume-high";
+      });
+    }
   });
 }
 
@@ -126,6 +153,18 @@ loadMemories();
 
 
 <body>
+
+<div id="scrollProgress"></div>
+
+<!-- 🌌 Animated Background Orbs -->
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
+</div>
+<div class="bg-noise"></div>
+<div class="candle-glow" aria-hidden="true"></div>
 
 <!-- 🔐 PASSWORD SCREEN -->
 <div id="lockScreen" class="lock-screen">
@@ -157,7 +196,7 @@ loadMemories();
   <section class="timeline">
     <div class="timeline-card">
 <span class="heart">
-<i class="fa-solid fa-heart fa-2xl" style="color: #e64b7c;"></i></span>
+<i class="fa-solid fa-infinity fa-2xl" style="color: #e64b7c;"></i></span>
       <h4>OUR ETERNAL TIMELINE</h4>
 
       <div class="time-grid">
@@ -195,8 +234,8 @@ loadMemories();
     <span class="date">25-11-2025</span>
     <h3>أحلى يوم لينا</h3>
     <p>
-      اليوم ده كان من أحلى الأيام اللي عدّت علينا،
-      اتطمنّا فيه لبعض قوي وحسّينا قد إيه وجودنا مع بعض مريح
+      اليوم ده كان من أحلى الأيام اللي عدّت علينا，
+      اتطمنّا فيه لبعض اوي وحسّينا قد إيه وجودنا مع بعض مريح
       وكان مميز أكتر لأنه كان يوم عيد ميلادك
     </p>  </div>
 </div>
@@ -231,6 +270,9 @@ loadMemories();
     <button class="video-play-btn" aria-label="play video">
       <i class="fa-solid fa-play"></i>
     </button>
+    <button class="video-sound-btn" aria-label="toggle sound">
+      <i class="fa-solid fa-volume-xmark"></i>
+    </button>
   </div>
 
   <div class="memory-info">
@@ -256,12 +298,17 @@ loadMemories();
   <section class="final">
     <div class="final-card">
       <span><i class="fa-solid fa-heart fa-2xl" style="color: #e64b7c;"></i></span>
-<p>
-معاك حسّيت يعني إيه حب حقيقي،  
-راحة واطمئنان من غير مجهود 
-<br>
-بحبك… ونفسي نفضل دايمًا سوا،
-ونكمل الطريق جنب بعض طول العمر
+<p id="finalText">
+معاكي حسّيت يعني إيه حب حقيقي،  
+راحة واطمئنان من غير مجهود  
+<br><br>
+بقيت أحب أبسط التفاصيل لمجرد إنك موجودة فيها،  
+وأحلى وقت عندي هو الوقت اللي بكون معاكي فيه  
+<br><br>
+ونفسي مهما يحصل نفضل دايمًا مع بعض،  
+نعدّي كل حاجة سوا ونكون سند لبعض طول العمر  
+<br><br>
+بحبك أوي… ونفسي نكمّل طريقنا جنب بعض دايمًا ..
 </p>
 
       <strong>Mahmoud & Waad</strong>
