@@ -107,8 +107,12 @@ async function loadMemories() {
 
     const info = document.createElement("div");
     info.className = "memory-info";
+    const dt = item.date_text;
+    const dateHtml = dt.includes("♾️")
+      ? '<i class="fa-solid fa-infinity fa-2xl" style="color:var(--pink)"></i>'
+      : dt;
     info.innerHTML = `
-      <span class="date">${item.date_text}</span>
+      <span class="date">${dateHtml}</span>
       <h3>${item.title}</h3>
       <p>${item.caption}</p>
     `;

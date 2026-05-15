@@ -178,6 +178,7 @@ musicBtn.addEventListener("click", () => {
 });
 
 
+
 /* ================= VIDEO FULLSCREEN ================= */
 
 const videoCard = document.querySelector('.video-card');
