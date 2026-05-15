@@ -8,14 +8,46 @@ const content = document.getElementById("content");
 
 const PASSWORD_LENGTH = PASSWORD.length;
 
+let prevLen = 0;
+
+/* Tiny sparkle burst at each digit */
+function burstSparkles() {
+  const wrap = document.querySelector(".lock-icon-wrap");
+  if (!wrap) return;
+  for (let i = 0; i < 6; i++) {
+    const dot = document.createElement("div");
+    dot.className = "sparkle";
+    const angle = Math.random() * 360;
+    const dist = 30 + Math.random() * 50;
+    dot.style.setProperty("--tx", `${Math.cos(angle) * dist}px`);
+    dot.style.setProperty("--ty", `${Math.sin(angle) * dist}px`);
+    dot.style.left = "50%";
+    dot.style.top = "50%";
+    wrap.appendChild(dot);
+    setTimeout(() => dot.remove(), 600);
+  }
+}
+
 /* Auto check when length completed */
 input.addEventListener("input", () => {
 
   // يسمح بأرقام فقط
   input.value = input.value.replace(/[^0-9]/g, "");
 
+  const len = input.value.length;
+
+  // تشتال شرارة عند كل رقم جديد
+  if (len > prevLen) burstSparkles();
+  prevLen = len;
+
+  // Update pin dots
+  const dots = document.querySelectorAll(".pin-dot");
+  dots.forEach((dot, i) => {
+    dot.classList.toggle("filled", i < len);
+  });
+
   // أول ما يكتب 4 أرقام يعمل check
-  if (input.value.length === PASSWORD_LENGTH) {
+  if (len === PASSWORD_LENGTH) {
     checkPassword();
   }
 });
@@ -29,12 +61,9 @@ function checkPassword() {
     input.disabled = true;
 
     const lockCard = document.querySelector(".lock-card");
-    const lockIcon = lockCard.querySelector("i");
     const lockHint = lockCard.querySelector("p");
 
     lockHint.textContent = "جاري الفتح...";
-    lockIcon.className = "fa-solid fa-spinner fa-spin fa-2xl";
-    lockIcon.style.color = "#e64b7c";
 
     lockCard.classList.add("lock-success");
 
@@ -58,6 +87,20 @@ function checkPassword() {
 
     input.value = "";
     input.placeholder = "كلمة المرور غير صحيحة";
+
+    const card = document.querySelector(".lock-card");
+    const icon = card.querySelector(".lock-icon-locked");
+    const dots = document.querySelectorAll(".pin-dot");
+
+    card.classList.add("shake");
+    icon.style.color = "#ff3355";
+    dots.forEach(d => d.classList.add("wrong"));
+
+    setTimeout(() => {
+      card.classList.remove("shake");
+      icon.style.color = "#e64b7c";
+      dots.forEach(d => d.classList.remove("wrong", "filled"));
+    }, 600);
 
   }
 }

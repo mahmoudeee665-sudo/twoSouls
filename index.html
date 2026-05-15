@@ -7,7 +7,20 @@
     content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
   />
   <title>Two Souls</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50,50 C70,20 90,25 90,45 C90,65 70,75 50,50 C30,25 10,35 10,55 C10,75 30,80 50,50' fill='none' stroke='%23e64b7c' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/png" href="img/icon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="img/icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Two Souls">
+
+  <meta property="og:title" content="Two Souls" />
+  <meta property="og:description" content="Our memories, our story" />
+  <meta property="og:image" content="img/icon-512.png" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+  <meta property="og:url" content="https://justus-wm.vercel.app/" />
+  <meta property="og:type" content="website" />
 
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
@@ -170,7 +183,11 @@ loadMemories();
 <!-- 🔐 PASSWORD SCREEN -->
 <div id="lockScreen" class="lock-screen">
   <div class="lock-card">
-    <i class="fa-solid fa-lock fa-2xl" style="color: #e64b7c;"></i>
+    <div class="lock-icon-wrap">
+      <i class="fa-solid fa-lock fa-2xl lock-icon-locked" style="color: #e64b7c;"></i>
+      <i class="fa-solid fa-lock-open fa-2xl lock-icon-unlocked" style="color: #e64b7c;"></i>
+      <div class="lock-ring"></div>
+    </div>
     <h3>محتوى خاص</h3>
     <p>من فضلك أدخل كلمة المرور للمتابعة</p>
 
@@ -183,6 +200,13 @@ loadMemories();
   maxlength="4"
   autocomplete="off"
 />
+
+<div class="pin-dots">
+  <span class="pin-dot"></span>
+  <span class="pin-dot"></span>
+  <span class="pin-dot"></span>
+  <span class="pin-dot"></span>
+</div>
 
 
 
@@ -355,5 +379,6 @@ loadMemories();
 </div>
 
 <script src="script.js"></script>
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');</script>
 </body>
 </html>
