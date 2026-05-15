@@ -1,23 +1,4 @@
-/* RESET */
-
-/* Custom scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb {
-  background: rgba(230,75,124,0.4);
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover { background: rgba(230,75,124,0.6); }
-html { scrollbar-color: rgba(230,75,124,0.4) transparent; scrollbar-width: thin; }
-
-@font-face {
-  font-family: 'Rekaa';
-  src: url('fonts/Rekaa.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
+﻿/* ================= RESET ================= */
 * {
   margin: 0;
   padding: 0;
@@ -34,13 +15,58 @@ body {
   width: 100%;
   overflow-x: hidden;
   font-family: 'Cairo', sans-serif;
-  color: #fff;
-  background: #08080e;
+  color: var(--text);
+  background: var(--bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ================= ANIMATED BACKGROUND ORBS ================= */
+/* ================= CUSTOM PROPERTIES ================= */
+:root {
+  --pink: #e64b7c;
+  --pink-rgb: 230, 75, 124;
+  --wrong-red: #ff3355;
+  --wrong-red-rgb: 255, 51, 85;
+  --bg: #08080e;
+  --bg-rgb: 8, 8, 14;
+  --text: #fff;
+  --candle-color: rgba(255, 160, 50, 0.12);
+  --highlight-bg: rgba(233, 24, 90, 0.55);
+}
+
+/* ================= SCROLLBAR ================= */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(var(--pink-rgb), 0.4);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--pink-rgb), 0.6);
+}
+
+html {
+  scrollbar-color: rgba(var(--pink-rgb), 0.4) transparent;
+  scrollbar-width: thin;
+}
+
+/* ================= FONT ================= */
+@font-face {
+  font-family: 'Rekaa';
+  src: url('fonts/Rekaa.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ================= BACKGROUND (orbs, noise, candle-glow) ================= */
 .bg-orbs {
   position: fixed;
   inset: 0;
@@ -105,45 +131,31 @@ body {
   animation: orbFloat4 25s cubic-bezier(0.22, 1, 0.36, 1) infinite;
 }
 
-/* Shift orb colors toward pink when password input is focused */
 body:has(#passwordInput:focus) .orb-2 {
   background: radial-gradient(circle, rgba(232,74,122,0.4), transparent 70%);
 }
+
 body:has(#passwordInput:focus) .orb-3 {
   background: radial-gradient(circle, rgba(232,74,122,0.35), transparent 70%);
 }
+
 body:has(#passwordInput:focus) .orb-4 {
   background: radial-gradient(circle, rgba(232,74,122,0.3), transparent 70%);
 }
 
-@keyframes orbFloat1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(80px, 60px) scale(1.08); }
-  50% { transform: translate(40px, 120px) scale(0.95); }
-  75% { transform: translate(120px, 40px) scale(1.05); }
+.candle-glow {
+  position: fixed;
+  bottom: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--candle-color), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: candleFlicker 3.5s ease-in-out infinite alternate;
 }
-
-@keyframes orbFloat2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(-60px, -80px) scale(1.06); }
-  50% { transform: translate(-100px, 40px) scale(0.93); }
-  75% { transform: translate(-30px, -40px) scale(1.04); }
-}
-
-@keyframes orbFloat3 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(60px, -40px) scale(0.95); }
-  50% { transform: translate(-40px, -80px) scale(1.07); }
-  75% { transform: translate(80px, -20px) scale(1.02); }
-}
-
-@keyframes orbFloat4 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(-40px, 60px) scale(1.05); }
-  50% { transform: translate(60px, 100px) scale(0.96); }
-  75% { transform: translate(-80px, 30px) scale(1.03); }
-}
-
 
 /* ================= PASSWORD SCREEN ================= */
 .lock-screen {
@@ -153,7 +165,7 @@ body:has(#passwordInput:focus) .orb-4 {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(8,8,14,0.3);
+  background: rgba(var(--bg-rgb), 0.3);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
   transition: opacity 0.6s ease, backdrop-filter 0.6s ease, transform 0.6s ease;
@@ -187,9 +199,10 @@ body:has(#passwordInput:focus) .orb-4 {
   transition: box-shadow 0.4s ease, border-color 0.4s ease;
   border: 1px solid transparent;
 }
+
 .lock-card:focus-within {
-  border-color: rgba(230,75,124,0.25);
-  box-shadow: 0 0 40px rgba(230,75,124,0.15), 0 0 80px rgba(230,75,124,0.05);
+  border-color: rgba(var(--pink-rgb), 0.25);
+  box-shadow: 0 0 40px rgba(var(--pink-rgb), 0.15), 0 0 80px rgba(var(--pink-rgb), 0.05);
 }
 
 .lock-icon-wrap {
@@ -201,38 +214,38 @@ body:has(#passwordInput:focus) .orb-4 {
   width: 50px;
   height: 50px;
 }
+
 .lock-icon-locked,
 .lock-icon-unlocked {
   position: absolute;
   transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+
 .lock-icon-unlocked {
   opacity: 0;
   transform: scale(0.3);
 }
+
 .lock-success .lock-icon-locked {
   opacity: 0;
   transform: scale(0.3);
 }
+
 .lock-success .lock-icon-unlocked {
   opacity: 1;
   transform: scale(1);
 }
+
 .lock-ring {
   position: absolute;
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  border: 1px solid rgba(230,75,124,0.2);
+  border: 1px solid rgba(var(--pink-rgb), 0.2);
   animation: lockRingPulse 2.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
   pointer-events: none;
 }
-@keyframes lockRingPulse {
-  0% { transform: scale(0.7); opacity: 1; }
-  100% { transform: scale(1.6); opacity: 0; }
-}
 
-/* Sparkle particles on each digit */
 .sparkle {
   position: absolute;
   width: 5px;
@@ -241,16 +254,6 @@ body:has(#passwordInput:focus) .orb-4 {
   background: #ff8eb5;
   pointer-events: none;
   animation: sparkleFade 0.6s ease-out forwards;
-}
-@keyframes sparkleFade {
-  0% {
-    opacity: 1;
-    transform: translate(-50%, -50%) translate(0, 0) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(0);
-  }
 }
 
 .lock-icon {
@@ -273,22 +276,22 @@ body:has(#passwordInput:focus) .orb-4 {
   padding: 14px;
   font-size: 16px;
   border-radius: 16px;
-  border: 1px solid rgba(230, 75, 124, 0.2);
+  border: 1px solid rgba(var(--pink-rgb), 0.2);
   text-align: center;
   margin-bottom: 16px;
   outline: none;
   transition: box-shadow 0.25s ease, border-color 0.25s ease;
   background: rgba(10, 10, 20, 0.5);
-  color: #fff;
+  color: var(--text);
   animation: inputBorderPulse 3s ease-in-out infinite;
 }
 
-@keyframes inputBorderPulse {
-  0%, 100% { border-color: rgba(230, 75, 124, 0.2); box-shadow: 0 0 8px rgba(230,75,124,0.05); }
-  50% { border-color: rgba(230, 75, 124, 0.4); box-shadow: 0 0 16px rgba(230,75,124,0.12); }
+.lock-card input:focus {
+  border-color: rgba(var(--pink-rgb), 0.6);
+  box-shadow: 0 0 0 3px rgba(var(--pink-rgb), 0.15), 0 0 30px rgba(var(--pink-rgb), 0.1);
+  animation: none;
 }
 
-/* Pin dots */
 .pin-dots {
   display: flex;
   justify-content: center;
@@ -296,44 +299,31 @@ body:has(#passwordInput:focus) .orb-4 {
   margin: -8px 0 18px;
   direction: ltr;
 }
+
 .pin-dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
   background: rgba(255,255,255,0.12);
-  border: 1.5px solid rgba(230,75,124,0.2);
+  border: 1.5px solid rgba(var(--pink-rgb), 0.2);
   transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
+
 .pin-dot.filled {
-  background: #e64b7c;
-  border-color: #e64b7c;
+  background: var(--pink);
+  border-color: var(--pink);
   transform: scale(1.2);
-  box-shadow: 0 0 12px rgba(230,75,124,0.4);
-}
-.pin-dot.wrong {
-  background: #ff3355;
-  border-color: #ff3355;
-  box-shadow: 0 0 12px rgba(255,51,85,0.4);
+  box-shadow: 0 0 12px rgba(var(--pink-rgb), 0.4);
 }
 
-/* Shake animation */
+.pin-dot.wrong {
+  background: var(--wrong-red);
+  border-color: var(--wrong-red);
+  box-shadow: 0 0 12px rgba(var(--wrong-red-rgb), 0.4);
+}
+
 .shake {
   animation: cardShake 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-@keyframes cardShake {
-  0%, 100% { transform: translateX(0); }
-  15% { transform: translateX(-8px); }
-  30% { transform: translateX(8px); }
-  45% { transform: translateX(-6px); }
-  60% { transform: translateX(6px); }
-  75% { transform: translateX(-3px); }
-  90% { transform: translateX(3px); }
-}
-
-.lock-card input:focus {
-  border-color: rgba(230, 75, 124, 0.6);
-  box-shadow: 0 0 0 3px rgba(230, 75, 124, 0.15), 0 0 30px rgba(230, 75, 124, 0.1);
-  animation: none;
 }
 
 .lock-card button {
@@ -341,10 +331,14 @@ body:has(#passwordInput:focus) .orb-4 {
   padding: 14px;
   border-radius: 16px;
   border: none;
-  background: #e64b7c;
-  color: #fff;
+  background: var(--pink);
+  color: var(--text);
   font-size: 15px;
   font-weight: 600;
+}
+
+.lock-success {
+  animation: successPulse 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 /* ================= CONTENT ================= */
@@ -372,7 +366,6 @@ body:has(#passwordInput:focus) .orb-4 {
   overflow: hidden;
 }
 
-/* Pink spotlight glow in the center */
 .timeline-card::after {
   content: '';
   position: absolute;
@@ -381,18 +374,18 @@ body:has(#passwordInput:focus) .orb-4 {
   width: 420px;
   height: 220px;
   transform: translate(-50%, -50%);
-  background: radial-gradient(ellipse, rgba(230,75,124,0.5), transparent 70%);
+  background: radial-gradient(ellipse, rgba(var(--pink-rgb), 0.5), transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
 
-/* Starfield background */
 .tl-stars {
   position: absolute;
   inset: 0;
   pointer-events: none;
   overflow: hidden;
 }
+
 .tl-stars::before,
 .tl-stars::after {
   content: '';
@@ -400,7 +393,7 @@ body:has(#passwordInput:focus) .orb-4 {
   width: 2px;
   height: 2px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--text);
   opacity: 0;
   box-shadow:
     20px 30px 0 0 rgba(255,255,255,0.3),
@@ -420,6 +413,7 @@ body:has(#passwordInput:focus) .orb-4 {
     580px 170px 0 0 rgba(255,255,255,0.15);
   animation: twinkle 4s ease-in-out infinite alternate;
 }
+
 .tl-stars::after {
   box-shadow:
     40px 50px 0 0 rgba(255,255,255,0.2),
@@ -439,12 +433,7 @@ body:has(#passwordInput:focus) .orb-4 {
     640px 160px 0 0 rgba(255,255,255,0.15);
   animation-delay: 2s;
 }
-@keyframes twinkle {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
 
-/* Header with infinity and lines */
 .tl-header {
   display: flex;
   align-items: center;
@@ -454,24 +443,22 @@ body:has(#passwordInput:focus) .orb-4 {
   position: relative;
   z-index: 1;
 }
+
 .tl-line-left,
 .tl-line-right {
   flex: 1;
   max-width: 70px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(230,75,124,0.35), transparent);
+  background: linear-gradient(90deg, transparent, rgba(var(--pink-rgb), 0.35), transparent);
 }
+
 .tl-icon {
   font-size: 26px;
-  color: #e64b7c;
+  color: var(--pink);
   display: flex;
   align-items: center;
   justify-content: center;
   animation: infinityFloat 4s ease-in-out infinite;
-}
-@keyframes infinityFloat {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-3px) scale(1.06); }
 }
 
 .tl-title {
@@ -486,7 +473,6 @@ body:has(#passwordInput:focus) .orb-4 {
   z-index: 1;
 }
 
-/* Time grid */
 .time-grid {
   direction: ltr;
   display: grid;
@@ -496,7 +482,6 @@ body:has(#passwordInput:focus) .orb-4 {
   z-index: 1;
 }
 
-/* Cell */
 .time-cell {
   position: relative;
   background: rgba(255,255,255,0.08);
@@ -509,11 +494,11 @@ body:has(#passwordInput:focus) .orb-4 {
   gap: 4px;
   transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
 .time-cell:hover {
   transform: translateY(-3px);
 }
 
-/* Aura ring behind number */
 .cell-aura {
   position: absolute;
   top: 50%;
@@ -522,10 +507,11 @@ body:has(#passwordInput:focus) .orb-4 {
   height: 56px;
   margin: -28px 0 0 -28px;
   border-radius: 50%;
-  border: 1px solid rgba(230,75,124,0.1);
+  border: 1px solid rgba(var(--pink-rgb), 0.1);
   pointer-events: none;
   animation: auraSpin var(--o, 6s) linear infinite;
 }
+
 .cell-aura::before {
   content: '';
   position: absolute;
@@ -534,12 +520,9 @@ body:has(#passwordInput:focus) .orb-4 {
   width: 5px;
   height: 5px;
   margin-left: -2.5px;
-  background: #e64b7c;
+  background: var(--pink);
   border-radius: 50%;
   opacity: 0.25;
-}
-@keyframes auraSpin {
-  to { transform: rotate(360deg); }
 }
 
 .time-cell span {
@@ -547,8 +530,9 @@ body:has(#passwordInput:focus) .orb-4 {
   font-weight: 700;
   position: relative;
   z-index: 1;
-  text-shadow: 0 0 20px rgba(230,75,124,0.15);
+  text-shadow: 0 0 20px rgba(var(--pink-rgb), 0.15);
 }
+
 .time-cell small {
   font-size: 23px;
   opacity: .75;
@@ -559,18 +543,16 @@ body:has(#passwordInput:focus) .orb-4 {
   font-family: 'Rekaa', 'Cairo', sans-serif;
 }
 
-/* Highlight (seconds) */
 .highlight {
-  background: rgba(233, 24, 90, 0.55) !important;
+  background: var(--highlight-bg) !important;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(255, 183, 204, 0.45);
   box-shadow:
-    0 14px 34px rgba(230, 75, 124, 0.45),
+    0 14px 34px rgba(var(--pink-rgb), 0.45),
     inset 0 0 20px rgba(255,255,255,0.15);
 }
 
-/* Sonar ring for seconds */
 .sonar-ring {
   position: absolute;
   top: 50%;
@@ -579,29 +561,21 @@ body:has(#passwordInput:focus) .orb-4 {
   height: 76px;
   margin: -38px 0 0 -38px;
   border-radius: 50%;
-  border: 1px solid rgba(230,75,124,0.3);
+  border: 1px solid rgba(var(--pink-rgb), 0.3);
   pointer-events: none;
   animation: sonarPing 2.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-}
-@keyframes sonarPing {
-  0% { transform: scale(0.6); opacity: 1; }
-  100% { transform: scale(1.8); opacity: 0; }
 }
 
 .glow {
   animation: cellPulse 2.5s infinite cubic-bezier(0.22, 1, 0.36, 1);
 }
-@keyframes cellPulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 14px 34px rgba(230, 75, 124, 0.45), inset 0 0 20px rgba(255,255,255,0.15); }
-  50% { transform: scale(1.05); box-shadow: 0 14px 50px rgba(230, 75, 124, 0.7), 0 0 40px rgba(230, 75, 124, 0.25), inset 0 0 20px rgba(255,255,255,0.15); }
-}
 
-/* Footer */
 .tl-footer {
   margin-top: 28px;
   position: relative;
   z-index: 1;
 }
+
 .tl-footnote {
   font-size: 23px;
   opacity: 0.45;
@@ -610,60 +584,16 @@ body:has(#passwordInput:focus) .orb-4 {
   letter-spacing: 1px;
 }
 
-
-/* ================= SCROLL ANIMATION ================= */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.memory-card {
-  opacity: 0;
-}
-
-.memory-card.show {
-  animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-/* Light sweep across memory card on reveal */
-@media (min-width: 769px) {
-  .memory-card.show::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -80%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(
-      105deg,
-      transparent 25%,
-      rgba(255,255,255,0.08) 40%,
-      rgba(255,255,255,0.18) 50%,
-      rgba(255,255,255,0.08) 60%,
-      transparent 75%
-    );
-    transform: skewX(-18deg);
-    animation: lightSweep 1.2s 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    pointer-events: none;
-    z-index: 2;
-    border-radius: inherit;
-  }
-}
-
-@keyframes lightSweep {
-  0% { left: -80%; }
-  100% { left: 160%; }
-}
-
 /* ================= MEMORIES ================= */
 .memories {
   max-width: 1100px;
   margin: auto;
   padding: 0 16px 70px;
   display: grid;
-  gap: 26px;
+  gap: 28px;
   position: relative;
 }
+
 .memories::before {
   content: '';
   position: absolute;
@@ -672,16 +602,20 @@ body:has(#passwordInput:focus) .orb-4 {
   width: 500px;
   height: 400px;
   transform: translate(-50%, -50%);
-  background: radial-gradient(ellipse, rgba(230,75,124,0.10), transparent 70%);
+  background: radial-gradient(ellipse, rgba(var(--pink-rgb), 0.10), transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
 
 .memory-card {
+  opacity: 0;
   position: relative;
+  width: 100%;
+  max-width: 480px;
+  margin: auto;
   border-radius: 32px;
   overflow: hidden;
-  background: linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.06));
+  background: transparent;
   backdrop-filter: blur(12px);
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -691,48 +625,20 @@ body:has(#passwordInput:focus) .orb-4 {
   box-shadow: 0 18px 50px rgba(0,0,0,0.3);
 }
 
-.memory-card img {
-  width: 100%;
-  display: block;
+.memory-card.show {
+  animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-.final {
-  display: flex;
-  justify-content: center;
-  padding: 70px 20px 100px;
-}
-
-.final-card {
-  max-width: 620px;
-  width: 100%;
-  background: rgba(255,255,255,0.2);
-  backdrop-filter: blur(16px);
-  border-radius: 34px;
-  padding: 36px;
-  text-align: center;
-}
-
-.final-card p {
-  font-size: 20px;
-  line-height: 1.9;
-  margin-bottom: 22px;
-}
-
-.final-card strong {
-  letter-spacing: 3px;
-  color: rgba(255, 183, 203, 0.856);
-  font-size: 18px;
-}
-/* ================= MEMORY CARD (ORIGINAL STYLE) ================= */
-
-.memory-card {
-  position: relative;
-  width: 100%;
-  max-width: 480px;
-  margin: auto;
-  border-radius: 32px;
-  overflow: hidden;
-  background: transparent;
+.memory-card img,
+.memory-card video {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.04) 0%,
+    rgba(255,255,255,0.12) 50%,
+    rgba(255,255,255,0.04) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
 }
 
 .memory-card img {
@@ -740,7 +646,7 @@ body:has(#passwordInput:focus) .orb-4 {
   height: auto;
   display: block;
   border-radius: 32px;
-  border: 1px solid rgba(230, 75, 124, 0.15);
+  border: 1px solid rgba(var(--pink-rgb), 0.15);
 }
 
 .memory-info {
@@ -754,12 +660,11 @@ body:has(#passwordInput:focus) .orb-4 {
   border-radius: 22px;
   padding: 18px 18px 18px;
   box-shadow: 0 18px 40px rgba(0,0,0,0.3);
-  border: 1px solid rgba(230, 75, 124, 0.15);
   overflow: hidden;
   z-index: 1;
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
-/* Pink spotlight behind each memory info */
 .memory-info::after {
   content: '';
   position: absolute;
@@ -768,38 +673,37 @@ body:has(#passwordInput:focus) .orb-4 {
   width: 260px;
   height: 180px;
   transform: translate(-50%, -50%);
-  background: radial-gradient(ellipse, rgba(230,75,124,0.30), transparent 70%);
+  background: radial-gradient(ellipse, rgba(var(--pink-rgb), 0.30), transparent 70%);
   pointer-events: none;
   z-index: -1;
   border-radius: inherit;
 }
 
-/* Decorative header bar */
 .memory-info::before {
   content: '';
   display: block;
   height: 1px;
   margin-bottom: 14px;
-  background: linear-gradient(90deg, transparent, rgba(230,75,124,0.3), rgba(230,75,124,0.5), rgba(230,75,124,0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(var(--pink-rgb), 0.3), rgba(var(--pink-rgb), 0.5), rgba(var(--pink-rgb), 0.3), transparent);
 }
 
 .memory-info .date {
   display: inline-block;
   font-family: 'Cormorant Garamond', serif;
-  color: #fff;
+  color: var(--text);
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 2px;
-  background: rgba(230, 75, 124, 0.3);
+  background: rgba(var(--pink-rgb), 0.3);
   padding: 3px 12px;
   border-radius: 20px;
   margin-bottom: 8px;
-  border: 1px solid rgba(230, 75, 124, 0.2);
+  border: 1px solid rgba(var(--pink-rgb), 0.2);
 }
 
 .memory-info .date i {
   font-size: 16px;
-  color: #e64b7c;
+  color: var(--pink);
 }
 
 .memory-info h3 {
@@ -810,13 +714,14 @@ body:has(#passwordInput:focus) .orb-4 {
   position: relative;
   padding-right: 16px;
 }
+
 .memory-info h3::before {
-  content: '✦';
+  content: '\2726';
   position: absolute;
   right: 0;
   top: 1px;
   font-size: 11px;
-  color: #e64b7c;
+  color: var(--pink);
   opacity: 0.6;
 }
 
@@ -826,47 +731,18 @@ body:has(#passwordInput:focus) .orb-4 {
   opacity: 0.85;
   padding-right: 16px;
 }
+
 .memory-info p::before {
   content: '\f004';
   font-family: 'Font Awesome 6 Free';
   font-weight: 900;
   font-size: 8px;
-  color: #e64b7c;
+  color: var(--pink);
   opacity: 0.5;
   margin-left: 4px;
 }
 
-.memories {
-  max-width: 1100px;
-  margin: auto;
-  padding: 0 16px 70px;
-  display: grid;
-  gap: 28px;
-}
-
-@media (min-width: 768px) {
-  .memories {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 36px;
-  }
-}
-
-.memory-info {
-  border: 1px solid rgba(255,255,255,0.2);
-}
-
-@media (max-width: 767px) {
-  .memory-card {
-    max-width: 80% !important;
-  }
-
-  .memory-info {
-    left: 12px;
-    right: 12px;
-    bottom: 20px;
-  }
-}
-
+/* ================= VIDEO CARD ================= */
 .video-card {
   position: relative;
 }
@@ -900,7 +776,7 @@ body:has(#passwordInput:focus) .orb-4 {
 }
 
 .video-play-btn i {
-  color: #e64b7c;
+  color: var(--pink);
   font-size: 22px;
   margin-left: 3px;
 }
@@ -908,6 +784,14 @@ body:has(#passwordInput:focus) .orb-4 {
 .video-play-btn:hover {
   transform: scale(1.08);
   background: rgba(255,255,255,0.35);
+}
+
+.video-play-btn::after {
+  content: "\266A";
+  position: absolute;
+  bottom: -18px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.6);
 }
 
 .video-card .video-wrapper {
@@ -918,14 +802,6 @@ body:has(#passwordInput:focus) .orb-4 {
 .video-card.playing .video-play-btn {
   opacity: 0;
   pointer-events: none;
-}
-
-  .video-play-btn::after {
-  content: "♪";
-  position: absolute;
-  bottom: -18px;
-  font-size: 10px;
-  color: rgba(255,255,255,0.6);
 }
 
 .video-sound-btn {
@@ -949,7 +825,7 @@ body:has(#passwordInput:focus) .orb-4 {
 }
 
 .video-sound-btn i {
-  color: #fff;
+  color: var(--text);
   font-size: 14px;
 }
 
@@ -958,6 +834,341 @@ body:has(#passwordInput:focus) .orb-4 {
   pointer-events: auto;
 }
 
+/* ================= FINAL MESSAGE ================= */
+.final {
+  display: flex;
+  justify-content: center;
+  padding: 70px 20px 100px;
+}
+
+.final-card {
+  max-width: 620px;
+  width: 100%;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(16px);
+  border-radius: 34px;
+  padding: 36px;
+  text-align: center;
+}
+
+.final-card p {
+  font-size: 20px;
+  line-height: 1.9;
+  margin-bottom: 22px;
+}
+
+.final-card strong {
+  letter-spacing: 3px;
+  color: rgba(255, 183, 203, 0.856);
+  font-size: 18px;
+}
+
+#finalText {
+  min-height: 4.5em;
+}
+
+#finalText.typing::after {
+  content: "|";
+  animation: blink 0.7s step-end infinite;
+  color: var(--pink);
+}
+
+/* ================= FLOATING HEARTS ================= */
+.hearts-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.heart-float {
+  position: absolute;
+  bottom: -20px;
+  color: #ff4d88;
+  font-size: 18px;
+  opacity: 0.8;
+  animation: floatUp cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ================= MUSIC BUTTON ================= */
+.music-btn {
+  position: fixed;
+  bottom: 22px;
+  right: 18px;
+  z-index: 9999;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--text);
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow:
+    0 12px 30px rgba(0,0,0,0.35),
+    inset 0 0 12px rgba(255,255,255,0.25);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.music-btn.playing {
+  animation: musicPulse 1.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.music-btn:active {
+  transform: scale(0.92);
+}
+
+.music-btn.hidden {
+  display: none;
+}
+
+/* ================= DASHBOARD BUTTON ================= */
+.dashboard-btn {
+  position: fixed;
+  bottom: 22px;
+  left: 18px;
+  z-index: 9999;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: var(--pink);
+  font-size: 18px;
+  text-decoration: none;
+  box-shadow:
+    0 12px 30px rgba(0,0,0,0.35),
+    inset 0 0 12px rgba(255,255,255,0.2);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.dashboard-btn:hover {
+  transform: scale(1.08);
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.dashboard-btn:active {
+  transform: scale(0.92);
+}
+
+/* ================= SCROLL PROGRESS ================= */
+#scrollProgress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(var(--pink-rgb), 0.3), var(--pink));
+  z-index: 10000;
+  width: 0%;
+  transition: width 0.1s linear;
+}
+
+/* ================= ANIMATIONS ================= */
+
+/* -- Password Screen -- */
+@keyframes lockRingPulse {
+  0% { transform: scale(0.7); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes sparkleFade {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(0);
+  }
+}
+
+@keyframes inputBorderPulse {
+  0%, 100% { border-color: rgba(var(--pink-rgb), 0.2); box-shadow: 0 0 8px rgba(var(--pink-rgb), 0.05); }
+  50% { border-color: rgba(var(--pink-rgb), 0.4); box-shadow: 0 0 16px rgba(var(--pink-rgb), 0.12); }
+}
+
+@keyframes cardShake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-8px); }
+  30% { transform: translateX(8px); }
+  45% { transform: translateX(-6px); }
+  60% { transform: translateX(6px); }
+  75% { transform: translateX(-3px); }
+  90% { transform: translateX(3px); }
+}
+
+@keyframes successPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(var(--pink-rgb), 0);
+  }
+  40% {
+    transform: scale(1.05);
+    box-shadow: 0 0 40px rgba(var(--pink-rgb), 0.8);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 60px rgba(var(--pink-rgb), 0.9);
+  }
+}
+
+/* -- Background Orbs -- */
+@keyframes orbFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(80px, 60px) scale(1.08); }
+  50% { transform: translate(40px, 120px) scale(0.95); }
+  75% { transform: translate(120px, 40px) scale(1.05); }
+}
+
+@keyframes orbFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(-60px, -80px) scale(1.06); }
+  50% { transform: translate(-100px, 40px) scale(0.93); }
+  75% { transform: translate(-30px, -40px) scale(1.04); }
+}
+
+@keyframes orbFloat3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(60px, -40px) scale(0.95); }
+  50% { transform: translate(-40px, -80px) scale(1.07); }
+  75% { transform: translate(80px, -20px) scale(1.02); }
+}
+
+@keyframes orbFloat4 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(-40px, 60px) scale(1.05); }
+  50% { transform: translate(60px, 100px) scale(0.96); }
+  75% { transform: translate(-80px, 30px) scale(1.03); }
+}
+
+/* -- Candle -- */
+@keyframes candleFlicker {
+  0% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+  50% { opacity: 1; transform: translateX(-50%) scale(1.06); }
+  100% { opacity: 0.6; transform: translateX(-50%) scale(0.94); }
+}
+
+/* -- Timeline -- */
+@keyframes twinkle {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes infinityFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-3px) scale(1.06); }
+}
+
+@keyframes auraSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes sonarPing {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+@keyframes cellPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 14px 34px rgba(var(--pink-rgb), 0.45), inset 0 0 20px rgba(255,255,255,0.15); }
+  50% { transform: scale(1.05); box-shadow: 0 14px 50px rgba(var(--pink-rgb), 0.7), 0 0 40px rgba(var(--pink-rgb), 0.25), inset 0 0 20px rgba(255,255,255,0.15); }
+}
+
+/* -- Memories -- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes lightSweep {
+  0% { left: -80%; }
+  100% { left: 160%; }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* -- Music Button -- */
+@keyframes musicPulse {
+  0%, 100% { box-shadow: 0 12px 30px rgba(0,0,0,0.35), inset 0 0 12px rgba(255,255,255,0.25); }
+  50% { box-shadow: 0 12px 50px rgba(var(--pink-rgb), 0.5), 0 0 30px rgba(var(--pink-rgb), 0.2), inset 0 0 12px rgba(255,255,255,0.25); }
+}
+
+/* -- Floating Hearts -- */
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-50vh) translateX(20px) scale(1.2);
+  }
+  100% {
+    transform: translateY(-100vh) translateX(-20px) scale(0.8);
+    opacity: 0;
+  }
+}
+
+/* -- Typing Cursor -- */
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* ================= RESPONSIVE ================= */
+
+/* Light sweep across memory card on reveal (desktop) */
+@media (min-width: 769px) {
+  .memory-card.show::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -80%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      105deg,
+      transparent 25%,
+      rgba(255,255,255,0.08) 40%,
+      rgba(255,255,255,0.18) 50%,
+      rgba(255,255,255,0.08) 60%,
+      transparent 75%
+    );
+    transform: skewX(-18deg);
+    animation: lightSweep 1.2s 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    pointer-events: none;
+    z-index: 2;
+    border-radius: inherit;
+  }
+}
+
+/* Memories grid + desktop button spacing */
+@media (min-width: 768px) {
+  .memories {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 36px;
+  }
+
+  .music-btn {
+    bottom: 28px;
+    right: 28px;
+  }
+
+  .dashboard-btn {
+    bottom: 28px;
+    left: 28px;
+  }
+}
+
+/* Mobile layout */
 @media (max-width: 768px) {
   .memory-card {
     display: flex;
@@ -980,7 +1191,7 @@ body:has(#passwordInput:focus) .orb-4 {
     -webkit-backdrop-filter: blur(12px);
     border-radius: 20px;
     box-shadow: 0 14px 34px rgba(0,0,0,0.25);
-    border: 1px solid rgba(230, 75, 124, 0.15);
+    border: 1px solid rgba(var(--pink-rgb), 0.15);
   }
 
   .memory-info h3 {
@@ -993,245 +1204,50 @@ body:has(#passwordInput:focus) .orb-4 {
   }
 }
 
-/* Medium screens (iPhone 14 Pro Max etc.) — bigger text */
+/* Small mobile */
+@media (max-width: 767px) {
+  .memory-card {
+    max-width: 80% !important;
+  }
+
+  .memory-info {
+    left: 12px;
+    right: 12px;
+    bottom: 20px;
+  }
+}
+
+/* Medium screens (iPhone 14 Pro Max etc.) */
 @media (min-width: 376px) and (max-width: 768px) {
   .memory-info {
     padding: 20px 22px;
   }
+
   .memory-info .date {
     font-size: 15px;
     padding: 4px 14px;
   }
+
   .memory-info h3 {
     font-size: 22px;
   }
+
   .memory-info p {
     font-size: 17px;
     line-height: 1.7;
   }
 }
 
-/* ================= SKELETON SHIMMER ================= */
-.memory-card img,
-.memory-card video {
-  background: linear-gradient(
-    90deg,
-    rgba(255,255,255,0.04) 0%,
-    rgba(255,255,255,0.12) 50%,
-    rgba(255,255,255,0.04) 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.8s ease-in-out infinite;
-}
-
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* ================= FLOATING MUSIC BUTTON ================= */
-.music-btn {
-  position: fixed;
-  bottom: 22px;
-  right: 18px;
-  z-index: 9999;
-
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-
-  border: none;
-  background: rgba(255, 255, 255, 0.28);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-
-  color: #fff;
-  font-size: 20px;
-  cursor: pointer;
-
-  box-shadow:
-    0 12px 30px rgba(0,0,0,0.35),
-    inset 0 0 12px rgba(255,255,255,0.25);
-
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.music-btn.playing {
-  animation: musicPulse 1.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-}
-
-@keyframes musicPulse {
-  0%, 100% { box-shadow: 0 12px 30px rgba(0,0,0,0.35), inset 0 0 12px rgba(255,255,255,0.25); }
-  50% { box-shadow: 0 12px 50px rgba(230, 75, 124, 0.5), 0 0 30px rgba(230, 75, 124, 0.2), inset 0 0 12px rgba(255,255,255,0.25); }
-}
-
-.music-btn:active {
-  transform: scale(0.92);
-}
-
-.music-btn.hidden {
-  display: none;
-}
-
-/* Desktop tweak */
-@media (min-width: 768px) {
-  .music-btn {
-    bottom: 28px;
-    right: 28px;
-  }
-}
-
-
-/* ================= MODIFICATIONS BASED ON REQUESTS ================= */
-
-
-
-/* ===== SUCCESS LOGIN ANIMATION ===== */
-
-.lock-success {
-  animation: successPulse 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-@keyframes successPulse {
-  0% {
-    transform: scale(1);
-    box-shadow: 0 0 0 rgba(230, 75, 124, 0);
-  }
-  40% {
-    transform: scale(1.05);
-    box-shadow: 0 0 40px rgba(230, 75, 124, 0.8);
-  }
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 60px rgba(230, 75, 124, 0.9);
-  }
-}
-
-
-
-/* ================= FLOATING HEARTS ================= */
-
-.hearts-container {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 1;
-}
-
-.heart-float {
-  position: absolute;
-  bottom: -20px;
-  color: #ff4d88;
-  font-size: 18px;
-  opacity: 0.8;
-  animation: floatUp cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-@keyframes floatUp {
-  0% {
-    transform: translateY(0) translateX(0) scale(1);
-    opacity: 0.8;
-  }
-  50% {
-    transform: translateY(-50vh) translateX(20px) scale(1.2);
-  }
-  100% {
-    transform: translateY(-100vh) translateX(-20px) scale(0.8);
-    opacity: 0;
-  }
-}
-
-
-
-
-
-
-/* ================= DASHBOARD FLOATING BUTTON ================= */
-
-.dashboard-btn {
-  position: fixed;
-  bottom: 22px;
-  left: 18px;
-  z-index: 9999;
-
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: rgba(255, 255, 255, 0.28);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-
-  border: 1px solid rgba(255,255,255,0.25);
-
-  color: #e64b7c;
-  font-size: 18px;
-  text-decoration: none;
-
-  box-shadow:
-    0 12px 30px rgba(0,0,0,0.35),
-    inset 0 0 12px rgba(255,255,255,0.2);
-
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-
-.dashboard-btn:hover {
-  transform: scale(1.08);
-  background: rgba(255, 255, 255, 0.28);
-}
-
-.dashboard-btn:active {
-  transform: scale(0.92);
-}
-
-/* Desktop spacing */
-@media (min-width: 768px) {
-  .dashboard-btn {
-    bottom: 28px;
-    left: 28px;
-  }
-}
-
-/* ================= SCROLLBAR ================= */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(230, 75, 124, 0.4);
-  border-radius: 999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(230, 75, 124, 0.6);
-}
-
-/* ================= SCROLL PROGRESS BAR ================= */
-#scrollProgress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 3px;
-  background: linear-gradient(90deg, rgba(230, 75, 124, 0.3), #e64b7c);
-  z-index: 10000;
-  width: 0%;
-  transition: width 0.1s linear;
-}
-
-/* ================= COMPACT (iPhone SE / small screens) ================= */
+/* Compact (iPhone SE / small screens) */
 @media (max-width: 375px) {
   .lock-card {
     padding: 28px 20px 32px;
   }
+
   .lock-card h3 {
     font-size: 17px;
   }
+
   .lock-card p {
     font-size: 13px;
   }
@@ -1239,33 +1255,41 @@ body:has(#passwordInput:focus) .orb-4 {
   .timeline {
     padding: 60px 14px 40px;
   }
+
   .timeline-card {
     padding: 28px 20px;
   }
+
   .tl-title {
     font-size: 18px;
     letter-spacing: 2px;
     margin-bottom: 28px;
   }
+
   .time-grid {
     gap: 12px;
   }
+
   .time-grid span {
     font-size: 24px;
   }
+
   .time-cell {
     padding: 12px 8px;
   }
+
   .cell-aura {
     width: 44px;
     height: 44px;
     margin: -22px 0 0 -22px;
   }
+
   .sonar-ring {
     width: 60px;
     height: 60px;
     margin: -30px 0 0 -30px;
   }
+
   .tl-line-left,
   .tl-line-right {
     max-width: 40px;
@@ -1274,19 +1298,23 @@ body:has(#passwordInput:focus) .orb-4 {
   .memory-card {
     max-width: 90% !important;
   }
+
   .memory-info {
     padding: 12px 14px 14px;
   }
+
   .memory-info h3 {
     font-size: 16px;
   }
+
   .memory-info p {
-  font-size: 16px;
+    font-size: 16px;
   }
 
   .final-card {
     padding: 24px 20px;
   }
+
   .final-card p {
     font-size: 16px;
   }
@@ -1298,6 +1326,7 @@ body:has(#passwordInput:focus) .orb-4 {
     bottom: 16px;
     right: 14px;
   }
+
   .dashboard-btn {
     width: 50px;
     height: 50px;
@@ -1305,39 +1334,4 @@ body:has(#passwordInput:focus) .orb-4 {
     bottom: 16px;
     left: 14px;
   }
-}
-
-.candle-glow {
-  position: fixed;
-  bottom: -80px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 260px;
-  height: 260px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 160, 50, 0.12), transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-  animation: candleFlicker 3.5s ease-in-out infinite alternate;
-}
-
-@keyframes candleFlicker {
-  0% { opacity: 0.5; transform: translateX(-50%) scale(1); }
-  50% { opacity: 1; transform: translateX(-50%) scale(1.06); }
-  100% { opacity: 0.6; transform: translateX(-50%) scale(0.94); }
-}
-
-/* ================= TYPING EFFECT ================= */
-#finalText {
-  min-height: 4.5em;
-}
-
-#finalText.typing::after {
-  content: "|";
-  animation: blink 0.7s step-end infinite;
-  color: #e64b7c;
-}
-
-@keyframes blink {
-  50% { opacity: 0; }
 }
