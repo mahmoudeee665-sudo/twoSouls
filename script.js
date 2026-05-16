@@ -272,7 +272,7 @@ document.addEventListener("visibilitychange", () => {
 });
 
 /* ================= FLOATING CALLIGRAPHY ================= */
-const words = ["حب", "أمل", "سلام", "روح", "عمر", "قلب", "نور", "قمر"];
+const words = ["حب", "أمل", "سلام", "أمان", "روح", "حنين","حب", "سند", "قرب", "شغف", "حياة", "وعد", "عشق", "حلم","حب"];
 const container = document.querySelector(".bg-calligraphy");
 if (container) {
   const bands = [18, 14, 10, 5, 3];
