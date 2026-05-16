@@ -83,7 +83,10 @@ function checkPassword() {
       setTimeout(() => {
         lock.style.display = "none";
         content.classList.remove("hidden");
-        requestAnimationFrame(() => content.classList.add("visible"));
+        requestAnimationFrame(() => {
+          content.classList.add("visible");
+          container?.classList.add("home");
+        });
       }, 500);
 
     }, 1000);
@@ -267,6 +270,40 @@ document.addEventListener("visibilitychange", () => {
     heartInterval = setInterval(createHeart, 1000);
   }
 });
+
+/* ================= FLOATING CALLIGRAPHY ================= */
+const words = ["حب", "أمل", "سلام", "روح", "عمر", "قلب", "نور", "قمر"];
+const container = document.querySelector(".bg-calligraphy");
+if (container) {
+  const bands = [18, 14, 10, 5, 3];
+  let idx = 0;
+  bands.forEach((count, band) => {
+    for (let i = 0; i < count; i++) {
+      const el = document.createElement("span");
+      el.textContent = words[idx % words.length];
+      idx++;
+      const opacity = 0.1 + band * 0.08;
+      el.style.cssText = `
+        position: absolute;
+        font-family: 'Rekaa', serif;
+        font-size: ${40 + Math.random() * 100}px;
+        color: rgba(var(--pink-rgb), ${opacity});
+        left: ${Math.random() * 100}%;
+        bottom: ${-5 + band * 20}%;
+        z-index: ${band};
+        animation: calligraphyFloat ${20 + Math.random() * 30}s linear infinite;
+        animation-delay: -${Math.random() * 50}s;
+        transform: rotate(${-15 + Math.random() * 30}deg);
+        text-shadow: 0 0 20px rgba(var(--pink-rgb), 0.35);
+        pointer-events: none;
+        user-select: none;
+      `;
+      container.appendChild(el);
+    }
+  });
+}
+
+
 
 /* ================= SCROLL REVEAL ================= */
 window.cardObserver = new IntersectionObserver((entries) => {

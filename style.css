@@ -75,6 +75,18 @@ html {
   pointer-events: none;
 }
 
+.bg-calligraphy {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bg-calligraphy.home {
+  opacity: 0.4;
+}
+
 .bg-noise {
   position: fixed;
   inset: 0;
@@ -356,14 +368,14 @@ body:has(#passwordInput:focus) .orb-4 {
 .timeline-card {
   max-width: 760px;
   width: 100%;
-  background: rgba(255,255,255,0.18);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: transparent;
   border-radius: 34px;
   padding: 44px;
   text-align: center;
   position: relative;
   overflow: hidden;
+  border: 1px solid rgba(var(--pink-rgb), 0.2);
+  box-shadow: 0 0 30px rgba(var(--pink-rgb), 0.08);
 }
 
 .timeline-card::after {
@@ -871,6 +883,14 @@ body:has(#passwordInput:focus) .orb-4 {
   content: "|";
   animation: blink 0.7s step-end infinite;
   color: var(--pink);
+}
+
+/* ================= FLOATING CALLIGRAPHY ================= */
+@keyframes calligraphyFloat {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-120vh) rotate(5deg); opacity: 0; }
 }
 
 /* ================= FLOATING HEARTS ================= */
