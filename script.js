@@ -52,6 +52,11 @@ input.addEventListener("input", () => {
   }
 });
 
+/* Enter key submits password */
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") checkPassword();
+});
+
 /* Password logic */
 function checkPassword() {
 
