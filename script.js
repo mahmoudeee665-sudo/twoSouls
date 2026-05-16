@@ -275,7 +275,7 @@ document.addEventListener("visibilitychange", () => {
 const words = ["حب", "أمل", "سلام", "أمان", "روح", "حنين","حب", "سند", "قرب", "شغف", "حياة", "وعد", "عشق", "حلم","حب"];
 const container = document.querySelector(".bg-calligraphy");
 if (container) {
-  const bands = [18, 14, 10, 5, 3];
+  const bands = [24, 18, 14, 12, 12];
   let idx = 0;
   bands.forEach((count, band) => {
     for (let i = 0; i < count; i++) {
