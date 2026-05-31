@@ -273,6 +273,15 @@ const music = document.getElementById("bgMusic");
 const musicBtn = document.getElementById("musicToggle");
 const musicIcon = musicBtn?.querySelector("i");
 let isPlaying = false;
+let musicPausedByVideo = false;
+
+function pauseMusic() {
+  if (music && !music.paused) { music.pause(); musicPausedByVideo = true; }
+}
+
+function resumeMusic() {
+  if (music && musicPausedByVideo) { music.play().catch(() => {}); musicPausedByVideo = false; }
+}
 
 async function playMusic() {
   if (!music) return;
@@ -309,16 +318,26 @@ function setupVideo() {
   const video = document.getElementById('memoriesVideo');
   const playBtn = document.querySelector('.video-play-btn');
   if (!video || !playBtn) return;
-  video.muted = true;
-  video.volume = 0;
+  video.muted = false;
+  video.volume = 1;
+  function onVidPlay() { pauseMusic(); videoCard?.classList.add('playing'); }
+  function onVidStop() { resumeMusic(); videoCard?.classList.remove('playing'); }
   playBtn.addEventListener('click', () => {
+    onVidPlay();
     video.play();
-    videoCard?.classList.add('playing');
     if (video.requestFullscreen) video.requestFullscreen();
     else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
   });
-  video.addEventListener('pause', () => videoCard?.classList.remove('playing'));
-  video.addEventListener('ended', () => videoCard?.classList.remove('playing'));
+  video.addEventListener('play', onVidPlay);
+  video.addEventListener('playing', onVidPlay);
+  video.addEventListener('pause', onVidStop);
+  video.addEventListener('ended', onVidStop);
+  document.addEventListener('fullscreenchange', () => {
+    if (document.fullscreenElement === video) onVidPlay(); else onVidStop();
+  });
+  document.addEventListener('webkitfullscreenchange', () => {
+    if (document.webkitFullscreenElement === video) onVidPlay(); else onVidStop();
+  });
   const soundBtn = videoCard?.querySelector(".video-sound-btn");
   if (soundBtn) {
     soundBtn.addEventListener("click", (e) => {
@@ -352,7 +371,7 @@ async function loadMemories() {
         : "";
       card.innerHTML = `
         <div class="video-wrapper">
-          <video src="${videoSrc}" poster="${posterSrc}" preload="metadata" muted playsinline></video>
+          <video src="${videoSrc}" poster="${posterSrc}" preload="metadata" playsinline></video>
           <button class="video-play-btn" aria-label="play video"><i class="fa-solid fa-play"></i></button>
           <button class="video-sound-btn" aria-label="toggle sound"><i class="fa-solid fa-volume-xmark"></i></button>
         </div>`;
@@ -391,14 +410,18 @@ async function loadMemories() {
     const v = vc.querySelector("video");
     const btn = vc.querySelector(".video-play-btn");
     if (!v || !btn) return;
+    function onVidPlay2() { pauseMusic(); vc.classList.add("playing"); }
+    function onVidStop2() { resumeMusic(); vc.classList.remove("playing"); }
     btn.addEventListener("click", () => {
+      onVidPlay2();
       v.play();
-      vc.classList.add("playing");
       if (v.requestFullscreen) v.requestFullscreen();
       else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();
     });
-    v.addEventListener("pause", () => vc.classList.remove("playing"));
-    v.addEventListener("ended", () => vc.classList.remove("playing"));
+    v.addEventListener("play", onVidPlay2);
+    v.addEventListener("playing", onVidPlay2);
+    v.addEventListener("pause", onVidStop2);
+    v.addEventListener("ended", onVidStop2);
     const sbBtn = vc.querySelector(".video-sound-btn");
     if (sbBtn) {
       sbBtn.addEventListener("click", (e) => {
