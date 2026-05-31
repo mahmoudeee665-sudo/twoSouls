@@ -1,16 +1,163 @@
+/* ================= SUPABASE ================= */
+const SUPABASE_URL = "https://bgfmlaawqkldjxuztfyw.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_AGIzngMZ121kB4oLhWICeg_koN3su9h";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+/* ================= CONTENT HTML (hidden from source) ================= */
+const CONTENT_HTML = `
+  <section class="timeline">
+    <div class="timeline-card">
+      <div class="tl-stars"></div>
+      <div class="tl-header">
+        <span class="tl-line-left"></span>
+        <span class="tl-icon"><i class="fa-solid fa-infinity"></i></span>
+        <span class="tl-line-right"></span>
+      </div>
+      <h4 class="tl-title">OUR ETERNAL TIMELINE</h4>
+      <div class="time-grid">
+        <div class="time-cell" style="--i:0; --o:6s">
+          <div class="cell-aura"></div>
+          <span id="years">0</span>
+          <small>سنة</small>
+        </div>
+        <div class="time-cell" style="--i:1; --o:5s">
+          <div class="cell-aura"></div>
+          <span id="months">0</span>
+          <small>شهر</small>
+        </div>
+        <div class="time-cell" style="--i:2; --o:4s">
+          <div class="cell-aura"></div>
+          <span id="days">0</span>
+          <small>يوم</small>
+        </div>
+        <div class="time-cell" style="--i:3; --o:3s">
+          <div class="cell-aura"></div>
+          <span id="hours">0</span>
+          <small>ساعة</small>
+        </div>
+        <div class="time-cell" style="--i:4; --o:2s">
+          <div class="cell-aura"></div>
+          <span id="minutes">0</span>
+          <small>دقيقة</small>
+        </div>
+        <div class="time-cell highlight glow" style="--i:5; --o:1s">
+          <div class="cell-aura"></div>
+          <div class="sonar-ring"></div>
+          <span id="seconds">0</span>
+          <small>ثانية</small>
+        </div>
+      </div>
+      <div class="tl-footer">
+        <span class="tl-footnote">وتبقى الذكرى نجمة تُنير الدرب</span>
+      </div>
+    </div>
+  </section>
 
+  <section class="memories">
+    <div class="memory-card" id="staticCard1">
+      <div class="memory-info">
+        <span class="date">1-11-2025</span>
+        <h3>أول صورة لينا</h3>
+        <p>أول صورة جمعتنا مع بعض، كانت بداية حكاية جميلة، لحظة بسيطة بس مليانة إحساس وذكريات هتفضل عايشة جوانا دايمًا</p>
+      </div>
+    </div>
+    <div class="memory-card" id="staticCard2">
+      <div class="memory-info">
+        <span class="date">25-11-2025</span>
+        <h3>أحلى يوم لينا</h3>
+        <p>اليوم ده كان من أحلى الأيام اللي عدّت علينا، اتطمنّا فيه لبعض اوي وحسّينا قد إيه وجودنا مع بعض مريح وكان مميز أكتر لأنه كان يوم عيد ميلادك</p>
+      </div>
+    </div>
+    <div class="memory-card" id="staticCard3">
+      <div class="memory-info">
+        <span class="date">27-1-2026</span>
+        <h3>يوم مميز بالنسبالي</h3>
+        <p>اليوم ده كان مميز بالنسبالي جدًا، كنت مبسوط من قلبي ومن غير أي سبب غير إننا كنا مع بعض</p>
+      </div>
+    </div>
+    <div class="memory-card video-card" id="staticVideoCard">
+      <div class="video-wrapper">
+        <video id="memoriesVideo" preload="metadata" muted playsinline></video>
+        <button class="video-play-btn" aria-label="play video"><i class="fa-solid fa-play"></i></button>
+        <button class="video-sound-btn" aria-label="toggle sound"><i class="fa-solid fa-volume-xmark"></i></button>
+      </div>
+      <div class="memory-info">
+        <span class="date"><i class="fa-solid fa-infinity fa-2xl"></i></span>
+        <h3>ذكريات عمري ما هنساها</h3>
+        <p>شوية لحظات متجمعة في فيديو، كل لقطة فيهم بتحكي ذكرى، وكل ذكرى ليها مكان خاص في قلبي</p>
+      </div>
+    </div>
+  </section>
 
-const PASSWORD = String.fromCharCode(49, 53, 49, 49);
+  <section class="memories" id="newMemoriesContainer"></section>
+
+  <section class="final">
+    <div class="final-card">
+      <span><i class="fa-solid fa-heart fa-2xl" style="color: #e64b7c;"></i></span>
+      <p id="finalText">
+معاكي حسّيت يعني إيه حب حقيقي،
+راحة واطمئنان من غير مجهود
+<br><br>
+بقيت أحب أبسط التفاصيل لمجرد إنك موجودة فيها،
+وأحلى وقت عندي هو الوقت اللي بكون معاكي فيه
+<br><br>
+ونفسي مهما يحصل نفضل دايمًا مع بعض،
+نعدّي كل حاجة سوا ونكون سند لبعض طول العمر
+<br><br>
+بحبك أوي… ونفسي نكمّل طريقنا جنب بعض دايمًا ..
+      </p>
+      <strong>Mahmoud & Waad</strong>
+    </div>
+  </section>
+`;
+
+/* ================= BLOB LOADER ================= */
+async function fetchBlob(url) {
+  const resp = await fetch(url);
+  return URL.createObjectURL(await resp.blob());
+}
+
+/* ================= INJECT CONTENT ================= */
+async function injectContent() {
+  const el = document.getElementById("content");
+  el.innerHTML = CONTENT_HTML;
+
+  const [posterUrl, img1Url, img2Url, img3Url, videoUrl] = await Promise.all([
+    fetchBlob("img/videobg.jpeg"),
+    fetchBlob("img/1.jpg"),
+    fetchBlob("img/2.jpg"),
+    fetchBlob("img/3.jpg"),
+    fetchBlob("video/memories.mp4"),
+  ]);
+
+  const cards = [
+    document.getElementById("staticCard1"),
+    document.getElementById("staticCard2"),
+    document.getElementById("staticCard3"),
+  ];
+
+  cards.forEach((card, i) => {
+    const img = document.createElement("img");
+    img.src = [img1Url, img2Url, img3Url][i];
+    img.alt = "";
+    card.prepend(img);
+  });
+
+  const video = document.getElementById("memoriesVideo");
+  if (video) {
+    video.poster = posterUrl;
+    video.src = videoUrl;
+  }
+
+  loadMemories();
+}
+
+/* ================= PASSWORD ================= */
 const input = document.getElementById("passwordInput");
 const lock = document.getElementById("lockScreen");
 const content = document.getElementById("content");
-
-const PASSWORD_LENGTH = PASSWORD.length;
-
 let prevLen = 0;
 
-/* Tiny sparkle burst at each digit */
 function burstSparkles() {
   const wrap = document.querySelector(".lock-icon-wrap");
   if (!wrap) return;
@@ -28,199 +175,151 @@ function burstSparkles() {
   }
 }
 
-/* Auto check when length completed */
 input.addEventListener("input", () => {
-
-  // يسمح بأرقام فقط
   input.value = input.value.replace(/[^0-9]/g, "");
-
   const len = input.value.length;
-
-  // تشتال شرارة عند كل رقم جديد
   if (len > prevLen) burstSparkles();
   prevLen = len;
-
-  // Update pin dots
   const dots = document.querySelectorAll(".pin-dot");
-  dots.forEach((dot, i) => {
-    dot.classList.toggle("filled", i < len);
-  });
-
-  // أول ما يكتب 4 أرقام يعمل check
-  if (len === PASSWORD_LENGTH) {
-    checkPassword();
-  }
+  dots.forEach((dot, i) => dot.classList.toggle("filled", i < len));
+  if (len === 4) checkPassword();
 });
 
-/* Enter key submits password */
 input.addEventListener("keydown", (e) => {
   if (e.key === "Enter") checkPassword();
 });
 
-/* Password logic */
-function checkPassword() {
-
-  if (input.value === PASSWORD) {
-
+async function checkPassword() {
+  const { data, error } = await sb.rpc("check_password", { input_pw: input.value });
+  if (!error && data) {
     input.blur();
     input.disabled = true;
-
     const lockCard = document.querySelector(".lock-card");
     const lockHint = lockCard.querySelector("p");
-
     lockHint.textContent = "جاري الفتح...";
-
     lockCard.classList.add("lock-success");
-
     burstHearts();
 
-    setTimeout(() => {
+    const contentLoaded = injectContent();
 
+    setTimeout(async () => {
       playMusic();
-
       lock.classList.add("closing");
-
-      setTimeout(() => {
-        lock.style.display = "none";
-        content.classList.remove("hidden");
-        requestAnimationFrame(() => {
-          content.classList.add("visible");
-          container?.classList.add("home");
-        });
-      }, 500);
-
-    }, 1000);
-
+      await contentLoaded;
+      lock.style.display = "none";
+      content.classList.remove("hidden");
+      requestAnimationFrame(() => {
+        content.classList.add("visible");
+        container?.classList.add("home");
+      });
+      startTimer();
+      setupVideo();
+      observeCards();
+      typeFinalMessage();
+    }, 1500);
   } else {
-
     input.value = "";
     input.placeholder = "كلمة المرور غير صحيحة";
-
     const card = document.querySelector(".lock-card");
     const icon = card.querySelector(".lock-icon-locked");
     const dots = document.querySelectorAll(".pin-dot");
-
     card.classList.add("shake");
     icon.style.color = "#ff3355";
     dots.forEach(d => d.classList.add("wrong"));
-
     setTimeout(() => {
       card.classList.remove("shake");
       icon.style.color = "#e64b7c";
       dots.forEach(d => d.classList.remove("wrong", "filled"));
     }, 600);
-
   }
 }
 
 /* ================= TIMER ================= */
-
 const startDate = new Date("2025-10-20T17:57:00");
+let timerInterval;
 
-setInterval(() => {
-
-  const now = new Date();
-  let diff = Math.floor((now - startDate) / 1000);
-
-  const years = Math.floor(diff / (3600 * 24 * 365));
-  diff %= 3600 * 24 * 365;
-
-  const months = Math.floor(diff / (3600 * 24 * 30));
-  diff %= 3600 * 24 * 30;
-
-  const days = Math.floor(diff / (3600 * 24));
-  diff %= 3600 * 24;
-
-  const hours = Math.floor(diff / 3600);
-  diff %= 3600;
-
-  const minutes = Math.floor(diff / 60);
-  const seconds = diff % 60;
-
-  document.getElementById("years").textContent = years;
-  document.getElementById("months").textContent = months;
-  document.getElementById("days").textContent = days;
-  document.getElementById("hours").textContent = hours;
-  document.getElementById("minutes").textContent = minutes;
-  document.getElementById("seconds").textContent = seconds;
-
-}, 1000);
-
-
-/* ================= MUSIC ================= */
-
-const music = document.getElementById("bgMusic");
-const musicBtn = document.getElementById("musicToggle");
-const musicIcon = musicBtn.querySelector("i");
-
-let isPlaying = false;
-
-function playMusic() {
-
-  music.volume = 0.6;
-  music.loop = true;
-
-  music.play().then(() => {
-    isPlaying = true;
-    musicIcon.className = "fa-solid fa-pause";
-    musicBtn.classList.add("playing");
-    musicBtn.classList.remove("hidden");
-  }).catch(() => {
-    console.log("Autoplay blocked");
-  });
+function startTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    const now = new Date();
+    let diff = Math.floor((now - startDate) / 1000);
+    const years = Math.floor(diff / (3600 * 24 * 365));
+    diff %= 3600 * 24 * 365;
+    const months = Math.floor(diff / (3600 * 24 * 30));
+    diff %= 3600 * 24 * 30;
+    const days = Math.floor(diff / (3600 * 24));
+    diff %= 3600 * 24;
+    const hours = Math.floor(diff / 3600);
+    diff %= 3600;
+    const minutes = Math.floor(diff / 60);
+    const seconds = diff % 60;
+    const y = document.getElementById("years");
+    if (y) y.textContent = years;
+    const m = document.getElementById("months");
+    if (m) m.textContent = months;
+    const d = document.getElementById("days");
+    if (d) d.textContent = days;
+    const h = document.getElementById("hours");
+    if (h) h.textContent = hours;
+    const mi = document.getElementById("minutes");
+    if (mi) mi.textContent = minutes;
+    const s = document.getElementById("seconds");
+    if (s) s.textContent = seconds;
+  }, 1000);
 }
 
-musicBtn.addEventListener("click", () => {
+/* ================= MUSIC ================= */
+const music = document.getElementById("bgMusic");
+const musicBtn = document.getElementById("musicToggle");
+const musicIcon = musicBtn?.querySelector("i");
+let isPlaying = false;
 
+async function playMusic() {
+  if (!music) return;
+  music.volume = 0.6;
+  music.loop = true;
+  try {
+    const blobUrl = await fetchBlob("music/Adele - Lovesong (Lyric Video) (mp3cut.net).mp3");
+    music.src = blobUrl;
+    await music.play();
+    isPlaying = true;
+    if (musicIcon) musicIcon.className = "fa-solid fa-pause";
+    if (musicBtn) { musicBtn.classList.add("playing"); musicBtn.classList.remove("hidden"); }
+  } catch (e) {
+    console.log("Autoplay blocked");
+  }
+}
+
+musicBtn?.addEventListener("click", () => {
   if (isPlaying) {
     music.pause();
-    musicIcon.className = "fa-solid fa-play";
-    musicBtn.classList.remove("playing");
+    if (musicIcon) musicIcon.className = "fa-solid fa-play";
+    if (musicBtn) musicBtn.classList.remove("playing");
   } else {
     music.play();
-    musicIcon.className = "fa-solid fa-pause";
-    musicBtn.classList.add("playing");
+    if (musicIcon) musicIcon.className = "fa-solid fa-pause";
+    if (musicBtn) musicBtn.classList.add("playing");
   }
-
   isPlaying = !isPlaying;
 });
 
-
-
-/* ================= VIDEO FULLSCREEN ================= */
-
-const videoCard = document.querySelector('.video-card');
-const video = document.getElementById('memoriesVideo');
-const playBtn = document.querySelector('.video-play-btn');
-
-if (video && playBtn) {
-
+/* ================= VIDEO ================= */
+function setupVideo() {
+  const videoCard = document.querySelector('.video-card');
+  const video = document.getElementById('memoriesVideo');
+  const playBtn = document.querySelector('.video-play-btn');
+  if (!video || !playBtn) return;
   video.muted = true;
   video.volume = 0;
-
   playBtn.addEventListener('click', () => {
-
     video.play();
-    videoCard.classList.add('playing');
-
-    if (video.requestFullscreen) {
-      video.requestFullscreen();
-    } else if (video.webkitEnterFullscreen) {
-      video.webkitEnterFullscreen();
-    }
-
+    videoCard?.classList.add('playing');
+    if (video.requestFullscreen) video.requestFullscreen();
+    else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
   });
-
-  video.addEventListener('pause', () => {
-    videoCard.classList.remove('playing');
-  });
-
-  video.addEventListener('ended', () => {
-    videoCard.classList.remove('playing');
-  });
-
-  // Sound toggle
-  const soundBtn = videoCard.querySelector(".video-sound-btn");
+  video.addEventListener('pause', () => videoCard?.classList.remove('playing'));
+  video.addEventListener('ended', () => videoCard?.classList.remove('playing'));
+  const soundBtn = videoCard?.querySelector(".video-sound-btn");
   if (soundBtn) {
     soundBtn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -228,47 +327,108 @@ if (video && playBtn) {
       soundBtn.querySelector("i").className = video.muted ? "fa-solid fa-volume-xmark" : "fa-solid fa-volume-high";
     });
   }
-
 }
 
+/* ================= LOAD MEMORIES (Supabase) ================= */
+async function loadMemories() {
+  const { data, error } = await sb
+    .from("memories")
+    .select("*")
+    .order("created_at", { ascending: true });
 
+  if (error) { console.error(error); return; }
 
-/* ================= FLOATING HEARTS SCRIPT ================= */
+  const container = document.getElementById("newMemoriesContainer");
+  if (!container) return;
 
+  for (const item of data) {
+    const card = document.createElement("div");
+    card.className = "memory-card" + (item.type === "video" ? " video-card" : "");
+
+    if (item.type === "video") {
+      const videoSrc = await fetchBlob(sb.storage.from("memories").getPublicUrl(item.media_path).data.publicUrl);
+      const posterSrc = item.poster_path
+        ? await fetchBlob(sb.storage.from("memories").getPublicUrl(item.poster_path).data.publicUrl)
+        : "";
+      card.innerHTML = `
+        <div class="video-wrapper">
+          <video src="${videoSrc}" poster="${posterSrc}" preload="metadata" muted playsinline></video>
+          <button class="video-play-btn" aria-label="play video"><i class="fa-solid fa-play"></i></button>
+          <button class="video-sound-btn" aria-label="toggle sound"><i class="fa-solid fa-volume-xmark"></i></button>
+        </div>`;
+    } else {
+      const imgUrl = await fetchBlob(sb.storage.from("memories").getPublicUrl(item.media_path).data.publicUrl);
+      card.innerHTML = `<img src="${imgUrl}" alt="">`;
+    }
+
+    const info = document.createElement("div");
+    info.className = "memory-info";
+    const dt = item.date_text;
+    const dateHtml = dt.includes("♾️")
+      ? '<i class="fa-solid fa-infinity fa-2xl" style="color:var(--pink)"></i>'
+      : dt;
+    info.innerHTML = `
+      <span class="date">${dateHtml}</span>
+      <h3>${item.title}</h3>
+      <p>${item.caption}</p>`;
+    card.appendChild(info);
+    container.appendChild(card);
+  }
+
+  document.querySelectorAll(".memory-card").forEach((c, i) => {
+    c.style.animationDelay = `${i * 0.08}s`;
+  });
+
+  (function watchCards() {
+    if (window.cardObserver) {
+      document.querySelectorAll(".memory-card:not(.show)").forEach(c => window.cardObserver.observe(c));
+    } else {
+      setTimeout(watchCards, 100);
+    }
+  })();
+
+  document.querySelectorAll(".video-card").forEach(vc => {
+    const v = vc.querySelector("video");
+    const btn = vc.querySelector(".video-play-btn");
+    if (!v || !btn) return;
+    btn.addEventListener("click", () => {
+      v.play();
+      vc.classList.add("playing");
+      if (v.requestFullscreen) v.requestFullscreen();
+      else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();
+    });
+    v.addEventListener("pause", () => vc.classList.remove("playing"));
+    v.addEventListener("ended", () => vc.classList.remove("playing"));
+    const sbBtn = vc.querySelector(".video-sound-btn");
+    if (sbBtn) {
+      sbBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        v.muted = !v.muted;
+        sbBtn.querySelector("i").className = v.muted ? "fa-solid fa-volume-xmark" : "fa-solid fa-volume-high";
+      });
+    }
+  });
+}
+
+/* ================= FLOATING HEARTS ================= */
 const heartsContainer = document.querySelector(".hearts-container");
 
 function createHeart() {
-
   const heart = document.createElement("div");
   heart.classList.add("heart-float");
   heart.innerHTML = '<i class="fa-solid fa-heart"></i>';
-
-  // مكان عشوائي أفقي
   heart.style.left = Math.random() * 100 + "vw";
-
-  // حجم عشوائي
   heart.style.fontSize = (Math.random() * 20 + 12) + "px";
-
-  // مدة عشوائية
   const duration = Math.random() * 3 + 3;
   heart.style.animationDuration = duration + "s";
-
-  heartsContainer.appendChild(heart);
-
-  // حذف بعد الانتهاء
-  setTimeout(() => {
-    heart.remove();
-  }, duration * 1000);
+  heartsContainer?.appendChild(heart);
+  setTimeout(() => heart.remove(), duration * 1000);
 }
 
-// Hearts interval — pauses when tab is hidden
 let heartInterval = setInterval(createHeart, 1000);
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden) {
-    clearInterval(heartInterval);
-  } else {
-    heartInterval = setInterval(createHeart, 1000);
-  }
+  if (document.hidden) clearInterval(heartInterval);
+  else heartInterval = setInterval(createHeart, 1000);
 });
 
 /* ================= FLOATING CALLIGRAPHY ================= */
@@ -303,8 +463,6 @@ if (container) {
   });
 }
 
-
-
 /* ================= SCROLL REVEAL ================= */
 window.cardObserver = new IntersectionObserver((entries) => {
   entries.forEach(e => {
@@ -319,33 +477,27 @@ function observeCards() {
   document.querySelectorAll(".memory-card:not(.show)").forEach(c => window.cardObserver.observe(c));
 }
 
-document.addEventListener("DOMContentLoaded", observeCards);
-
-/* ================= SCROLL PROGRESS ================= */
 /* ================= TYPING EFFECT ================= */
-(function typeFinalMessage() {
+function typeFinalMessage() {
   const el = document.getElementById("finalText");
   if (!el) return;
   const full = el.textContent.trim();
   el.textContent = "";
   el.classList.add("typing");
   let i = 0;
-
   const obs = new IntersectionObserver(([e]) => {
     if (!e.isIntersecting) return;
     const t = setInterval(() => {
       el.textContent = full.slice(0, i + 1);
       i++;
-      if (i >= full.length) {
-        clearInterval(t);
-        el.classList.remove("typing");
-      }
+      if (i >= full.length) { clearInterval(t); el.classList.remove("typing"); }
     }, 45);
     obs.disconnect();
   }, { threshold: 0.3 });
   obs.observe(el);
-})();
+}
 
+/* ================= SCROLL PROGRESS ================= */
 const progressBar = document.getElementById("scrollProgress");
 if (progressBar) {
   window.addEventListener("scroll", () => {
@@ -355,9 +507,9 @@ if (progressBar) {
   }, { passive: true });
 }
 
-/* ================= UNLOCK HEART BURST ================= */
+/* ================= HEART BURST ================= */
 function burstHearts() {
-  const container = document.querySelector(".hearts-container") || document.body;
+  const c = document.querySelector(".hearts-container") || document.body;
   for (let i = 0; i < 24; i++) {
     const el = document.createElement("div");
     el.innerHTML = '<i class="fa-solid fa-heart"></i>';
@@ -368,7 +520,6 @@ function burstHearts() {
       left: 50vw; top: 50vh;
       transform: translate(-50%, -50%);
       opacity: 1;
-      transition: none;
     `;
     document.body.appendChild(el);
     const angle = Math.random() * 2 * Math.PI;
