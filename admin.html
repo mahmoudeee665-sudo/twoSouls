@@ -7,6 +7,7 @@
 
   <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="push.js"></script>
 
   <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
@@ -1105,6 +1106,15 @@ if(mediaFile){
         showToast("Uploaded ✅", "Your memory is now live on the website.");
         setModeCreate();
         await loadList();
+        fetch('/api/notify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: 'Two Souls 💕',
+            body: `New memory: ${title}`,
+            url: '/'
+          })
+        }).catch(() => {});
         return;
       }
 
