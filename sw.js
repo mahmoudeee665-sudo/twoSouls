@@ -11,7 +11,10 @@ self.addEventListener('push', function (event) {
       body: data.body,
       icon: '/img/icon-192.png',
       badge: '/img/icon-192.png',
+      image: data.image,
       vibrate: [200, 100, 200],
+      dir: data.dir || 'rtl',
+      lang: data.lang || 'ar',
       data: { url: data.url }
     })
   );

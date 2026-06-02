@@ -1113,6 +1113,7 @@ if(mediaFile){
           body: JSON.stringify({
             title: 'Two Souls 💕',
             body: `New memory: ${title}`,
+            image: storagePublicUrl(media_path),
             url: '/'
           })
         }).catch(() => {});
