@@ -111,7 +111,7 @@ const CONTENT_HTML = `
   </section>
 `;
 
-/* ================= BLOB LOADER WITH CACHE ================= */
+/* ================= CACHE HELPER (for music only) ================= */
 async function loadCachedMedia(url) {
   const cache = await caches.open("media-cache");
   let resp = await cache.match(url);
@@ -123,17 +123,9 @@ async function loadCachedMedia(url) {
 }
 
 /* ================= INJECT CONTENT ================= */
-async function injectContent() {
+function injectContent() {
   const el = document.getElementById("content");
   el.innerHTML = CONTENT_HTML;
-
-  const [posterUrl, img1Url, img2Url, img3Url, videoUrl] = await Promise.all([
-    loadCachedMedia("img/videobg.jpeg"),
-    loadCachedMedia("img/1.jpg"),
-    loadCachedMedia("img/2.jpg"),
-    loadCachedMedia("img/3.jpg"),
-    loadCachedMedia("video/memories.mp4"),
-  ]);
 
   const cards = [
     document.getElementById("staticCard1"),
@@ -141,17 +133,19 @@ async function injectContent() {
     document.getElementById("staticCard3"),
   ];
 
+  const staticImgs = ["img/1.jpg", "img/2.jpg", "img/3.jpg"];
   cards.forEach((card, i) => {
     const img = document.createElement("img");
-    img.src = [img1Url, img2Url, img3Url][i];
+    img.src = staticImgs[i];
     img.alt = "";
+    img.loading = "lazy";
     card.prepend(img);
   });
 
   const video = document.getElementById("memoriesVideo");
   if (video) {
-    video.poster = posterUrl;
-    video.src = videoUrl;
+    video.poster = "img/videobg.jpeg";
+    video.src = "video/memories.mp4";
   }
 
   loadMemories();
@@ -376,20 +370,18 @@ async function loadMemories() {
     const card = document.createElement("div");
     card.className = "memory-card" + (item.type === "video" ? " video-card" : "");
 
+    const mediaUrl = sb.storage.from("memories").getPublicUrl(item.media_path).data.publicUrl;
+    const posterUrl = item.poster_path ? sb.storage.from("memories").getPublicUrl(item.poster_path).data.publicUrl : '';
+
     if (item.type === "video") {
-      const videoSrc = await loadCachedMedia(sb.storage.from("memories").getPublicUrl(item.media_path).data.publicUrl);
-      const posterSrc = item.poster_path
-        ? await loadCachedMedia(sb.storage.from("memories").getPublicUrl(item.poster_path).data.publicUrl)
-        : "";
       card.innerHTML = `
         <div class="video-wrapper">
-          <video src="${videoSrc}" poster="${posterSrc}" preload="metadata" playsinline></video>
+          <video src="${mediaUrl}" poster="${posterUrl}" preload="metadata" playsinline></video>
           <button class="video-play-btn" aria-label="play video"><i class="fa-solid fa-play"></i></button>
           <button class="video-sound-btn" aria-label="toggle sound"><i class="fa-solid fa-volume-xmark"></i></button>
         </div>`;
     } else {
-      const imgUrl = await loadCachedMedia(sb.storage.from("memories").getPublicUrl(item.media_path).data.publicUrl);
-      card.innerHTML = `<img src="${imgUrl}" alt="">`;
+      card.innerHTML = `<img src="${mediaUrl}" alt="" loading="lazy">`;
     }
 
     const info = document.createElement("div");
