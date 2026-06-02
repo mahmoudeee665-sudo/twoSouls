@@ -111,17 +111,6 @@ const CONTENT_HTML = `
   </section>
 `;
 
-/* ================= CACHE HELPER (for music only) ================= */
-async function loadCachedMedia(url) {
-  const cache = await caches.open("media-cache");
-  let resp = await cache.match(url);
-  if (!resp) {
-    resp = await fetch(url);
-    cache.put(url, resp.clone());
-  }
-  return URL.createObjectURL(await resp.blob());
-}
-
 /* ================= INJECT CONTENT ================= */
 function injectContent() {
   const el = document.getElementById("content");
@@ -294,8 +283,7 @@ async function playMusic() {
   music.volume = 0.6;
   music.loop = true;
   try {
-    const blobUrl = await loadCachedMedia("music/Adele - Lovesong (Lyric Video) (mp3cut.net).mp3");
-    music.src = blobUrl;
+    music.src = "music/Adele - Lovesong (Lyric Video) (mp3cut.net).mp3";
     await music.play();
     isPlaying = true;
     if (musicIcon) musicIcon.className = "fa-solid fa-pause";
@@ -311,7 +299,7 @@ musicBtn?.addEventListener("click", () => {
     if (musicIcon) musicIcon.className = "fa-solid fa-play";
     if (musicBtn) musicBtn.classList.remove("playing");
   } else {
-    music.play();
+    music.play().catch(() => {});
     if (musicIcon) musicIcon.className = "fa-solid fa-pause";
     if (musicBtn) musicBtn.classList.add("playing");
   }
@@ -330,7 +318,7 @@ function setupVideo() {
   function onVidStop() { resumeMusic(); videoCard?.classList.remove('playing'); }
   playBtn.addEventListener('click', () => {
     onVidPlay();
-    video.play();
+    video.play().catch(() => {});
     if (video.requestFullscreen) video.requestFullscreen();
     else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
   });
@@ -418,7 +406,7 @@ async function loadMemories() {
     function onVidStop2() { resumeMusic(); vc.classList.remove("playing"); }
     btn.addEventListener("click", () => {
       onVidPlay2();
-      v.play();
+      v.play().catch(() => {});
       if (v.requestFullscreen) v.requestFullscreen();
       else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();
     });
