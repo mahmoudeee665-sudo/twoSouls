@@ -1188,11 +1188,12 @@ if(mediaFile){
       await deleteStoragePath(pendingDelete.media_path);
       await deleteStoragePath(pendingDelete.poster_path);
 
+      const wasEditing = editingId === pendingDelete.id;
       closeDeleteModal();
       showToast("Deleted ✅", "Memory removed successfully.");
       await loadList();
 
-      if(editingId === pendingDelete.id){
+      if(wasEditing){
         setModeCreate();
       }
 
