@@ -1116,8 +1116,8 @@ if(mediaFile){
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            title: `${displayName} added a new memory 💕`,
-            body: title,
+            title: `${displayName} added a new memory ❣️`,
+            body: caption.length > 50 ? caption.slice(0, 50) + '…' : caption,
             image: storagePublicUrl(media_path),
             url: '/'
           })
