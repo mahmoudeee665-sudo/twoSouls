@@ -905,6 +905,7 @@ function applyPreview(){
 
     applyPreview();
     await loadList();
+    requestNotificationPermission();
 
     // Restore search query from sessionStorage
     const saved = sessionStorage.getItem("adminSearch");

@@ -29,12 +29,14 @@ async function subscribeToPush() {
   }
 }
 
-if (typeof Notification !== 'undefined') {
+window.subscribeToPush = subscribeToPush;
+
+window.requestNotificationPermission = async function () {
+  if (typeof Notification === 'undefined') return;
   if (Notification.permission === 'granted') {
     subscribeToPush();
   } else if (Notification.permission === 'default') {
-    Notification.requestPermission().then(perm => {
-      if (perm === 'granted') subscribeToPush();
-    });
+    const perm = await Notification.requestPermission();
+    if (perm === 'granted') subscribeToPush();
   }
-}
+};

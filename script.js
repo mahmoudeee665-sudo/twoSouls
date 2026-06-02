@@ -221,6 +221,7 @@ async function checkPassword() {
       setupVideo();
       observeCards();
       typeFinalMessage();
+      requestNotificationPermission();
     }, 1500);
   } else {
     input.value = "";
