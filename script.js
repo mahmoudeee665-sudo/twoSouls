@@ -354,36 +354,41 @@ async function loadMemories() {
   const container = document.getElementById("newMemoriesContainer");
   if (!container) return;
 
-  for (const item of data) {
-    const card = document.createElement("div");
-    card.className = "memory-card" + (item.type === "video" ? " video-card" : "");
+  const batchSize = 10;
+  for (let i = 0; i < data.length; i += batchSize) {
+    await new Promise(r => requestAnimationFrame(r));
+    const batch = data.slice(i, i + batchSize);
+    for (const item of batch) {
+      const card = document.createElement("div");
+      card.className = "memory-card" + (item.type === "video" ? " video-card" : "");
 
-    const mediaUrl = sb.storage.from("memories").getPublicUrl(item.media_path).data.publicUrl;
-    const posterUrl = item.poster_path ? sb.storage.from("memories").getPublicUrl(item.poster_path).data.publicUrl : '';
+      const mediaUrl = sb.storage.from("memories").getPublicUrl(item.media_path).data.publicUrl;
+      const posterUrl = item.poster_path ? sb.storage.from("memories").getPublicUrl(item.poster_path).data.publicUrl : '';
 
-    if (item.type === "video") {
-      card.innerHTML = `
-        <div class="video-wrapper">
-          <video src="${mediaUrl}" poster="${posterUrl}" preload="metadata" playsinline></video>
-          <button class="video-play-btn" aria-label="play video"><i class="fa-solid fa-play"></i></button>
-          <button class="video-sound-btn" aria-label="toggle sound"><i class="fa-solid fa-volume-xmark"></i></button>
-        </div>`;
-    } else {
-      card.innerHTML = `<img src="${mediaUrl}" alt="" loading="lazy">`;
+      if (item.type === "video") {
+        card.innerHTML = `
+          <div class="video-wrapper">
+            <video src="${mediaUrl}" poster="${posterUrl}" preload="metadata" playsinline></video>
+            <button class="video-play-btn" aria-label="play video"><i class="fa-solid fa-play"></i></button>
+            <button class="video-sound-btn" aria-label="toggle sound"><i class="fa-solid fa-volume-xmark"></i></button>
+          </div>`;
+      } else {
+        card.innerHTML = `<img src="${mediaUrl}" alt="" loading="lazy">`;
+      }
+
+      const info = document.createElement("div");
+      info.className = "memory-info";
+      const dt = item.date_text;
+      const dateHtml = dt.includes("♾️")
+        ? '<i class="fa-solid fa-infinity fa-2xl" style="color:var(--pink)"></i>'
+        : dt;
+      info.innerHTML = `
+        <span class="date">${dateHtml}</span>
+        <h3>${item.title}</h3>
+        <p>${item.caption}</p>`;
+      card.appendChild(info);
+      container.appendChild(card);
     }
-
-    const info = document.createElement("div");
-    info.className = "memory-info";
-    const dt = item.date_text;
-    const dateHtml = dt.includes("♾️")
-      ? '<i class="fa-solid fa-infinity fa-2xl" style="color:var(--pink)"></i>'
-      : dt;
-    info.innerHTML = `
-      <span class="date">${dateHtml}</span>
-      <h3>${item.title}</h3>
-      <p>${item.caption}</p>`;
-    card.appendChild(info);
-    container.appendChild(card);
   }
 
   document.querySelectorAll(".memory-card").forEach((c, i) => {
