@@ -111,9 +111,14 @@ const CONTENT_HTML = `
   </section>
 `;
 
-/* ================= BLOB LOADER ================= */
-async function fetchBlob(url) {
-  const resp = await fetch(url);
+/* ================= BLOB LOADER WITH CACHE ================= */
+async function loadCachedMedia(url) {
+  const cache = await caches.open("media-cache");
+  let resp = await cache.match(url);
+  if (!resp) {
+    resp = await fetch(url);
+    cache.put(url, resp.clone());
+  }
   return URL.createObjectURL(await resp.blob());
 }
 
@@ -123,11 +128,11 @@ async function injectContent() {
   el.innerHTML = CONTENT_HTML;
 
   const [posterUrl, img1Url, img2Url, img3Url, videoUrl] = await Promise.all([
-    fetchBlob("img/videobg.jpeg"),
-    fetchBlob("img/1.jpg"),
-    fetchBlob("img/2.jpg"),
-    fetchBlob("img/3.jpg"),
-    fetchBlob("video/memories.mp4"),
+    loadCachedMedia("img/videobg.jpeg"),
+    loadCachedMedia("img/1.jpg"),
+    loadCachedMedia("img/2.jpg"),
+    loadCachedMedia("img/3.jpg"),
+    loadCachedMedia("video/memories.mp4"),
   ]);
 
   const cards = [
@@ -288,7 +293,7 @@ async function playMusic() {
   music.volume = 0.6;
   music.loop = true;
   try {
-    const blobUrl = await fetchBlob("music/Adele - Lovesong (Lyric Video) (mp3cut.net).mp3");
+    const blobUrl = await loadCachedMedia("music/Adele - Lovesong (Lyric Video) (mp3cut.net).mp3");
     music.src = blobUrl;
     await music.play();
     isPlaying = true;
@@ -365,9 +370,9 @@ async function loadMemories() {
     card.className = "memory-card" + (item.type === "video" ? " video-card" : "");
 
     if (item.type === "video") {
-      const videoSrc = await fetchBlob(sb.storage.from("memories").getPublicUrl(item.media_path).data.publicUrl);
+      const videoSrc = await loadCachedMedia(sb.storage.from("memories").getPublicUrl(item.media_path).data.publicUrl);
       const posterSrc = item.poster_path
-        ? await fetchBlob(sb.storage.from("memories").getPublicUrl(item.poster_path).data.publicUrl)
+        ? await loadCachedMedia(sb.storage.from("memories").getPublicUrl(item.poster_path).data.publicUrl)
         : "";
       card.innerHTML = `
         <div class="video-wrapper">
@@ -376,7 +381,7 @@ async function loadMemories() {
           <button class="video-sound-btn" aria-label="toggle sound"><i class="fa-solid fa-volume-xmark"></i></button>
         </div>`;
     } else {
-      const imgUrl = await fetchBlob(sb.storage.from("memories").getPublicUrl(item.media_path).data.publicUrl);
+      const imgUrl = await loadCachedMedia(sb.storage.from("memories").getPublicUrl(item.media_path).data.publicUrl);
       card.innerHTML = `<img src="${imgUrl}" alt="">`;
     }
 
