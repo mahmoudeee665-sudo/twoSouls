@@ -205,6 +205,20 @@ async function checkPassword() {
       observeCards();
       typeFinalMessage();
       requestNotificationPermission();
+
+      const lastVisit = localStorage.getItem('lastVisitNotify');
+      if (!lastVisit || Date.now() - parseInt(lastVisit) > 3600000) {
+        fetch('/api/notify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: 'Someone opened Two Souls 💕',
+            body: '',
+            url: '/'
+          })
+        }).catch(() => {});
+        localStorage.setItem('lastVisitNotify', Date.now());
+      }
     }, 1500);
   } else {
     input.value = "";
