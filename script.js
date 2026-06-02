@@ -476,6 +476,11 @@ if (container) {
       container.appendChild(el);
     }
   });
+  const spans = container.querySelectorAll("span");
+  document.addEventListener("visibilitychange", () => {
+    const state = document.hidden ? "paused" : "";
+    spans.forEach(s => s.style.animationPlayState = state);
+  });
 }
 
 /* ================= SCROLL REVEAL ================= */
