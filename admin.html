@@ -1117,7 +1117,7 @@ if(mediaFile){
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             title: `${displayName} added a new memory ❣️`,
-            body: caption.length > 50 ? caption.slice(0, 50) + '…' : caption,
+            body: `📅 ${date_text}\n📌 ${title}\n💬 ${caption.length > 40 ? caption.slice(0, 40) + '…' : caption}`,
             image: storagePublicUrl(media_path),
             url: '/'
           })
