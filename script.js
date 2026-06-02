@@ -245,7 +245,7 @@ let timerInterval;
 
 function startTimer() {
   if (timerInterval) clearInterval(timerInterval);
-  timerInterval = setInterval(() => {
+  function tick() {
     const now = new Date();
     let diff = Math.floor((now - startDate) / 1000);
     const years = Math.floor(diff / (3600 * 24 * 365));
@@ -270,7 +270,13 @@ function startTimer() {
     if (mi) mi.textContent = minutes;
     const s = document.getElementById("seconds");
     if (s) s.textContent = seconds;
-  }, 1000);
+  }
+  tick();
+  timerInterval = setInterval(tick, 1000);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) { clearInterval(timerInterval); timerInterval = null; }
+    else if (!timerInterval) { tick(); timerInterval = setInterval(tick, 1000); }
+  });
 }
 
 /* ================= MUSIC ================= */
