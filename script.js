@@ -112,7 +112,7 @@ const CONTENT_HTML = `
 `;
 
 /* ================= INJECT CONTENT ================= */
-function injectContent() {
+async function injectContent() {
   const el = document.getElementById("content");
   el.innerHTML = CONTENT_HTML;
 
@@ -137,7 +137,7 @@ function injectContent() {
     video.src = "video/memories.mp4";
   }
 
-  loadMemories();
+  return loadMemories();
 }
 
 /* ================= PASSWORD ================= */
