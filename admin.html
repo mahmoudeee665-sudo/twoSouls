@@ -687,6 +687,7 @@
   const SUPABASE_URL = "https://bgfmlaawqkldjxuztfyw.supabase.co";
   const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_AGIzngMZ121kB4oLhWICeg_koN3su9h";
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+  const DISPLAY_NAMES = { 'mahmoud@love.com': 'Mahmoud', 'waad@love.com': 'Waad' };
 
   // =============================
   // Elements
@@ -900,7 +901,9 @@ function applyPreview(){
       return;
     }
 
-    userEmail.textContent = data.session.user.email;
+    const userEmailStr = data.session.user.email;
+    const displayName = DISPLAY_NAMES[userEmailStr] || 'Someone';
+    userEmail.textContent = userEmailStr;
     appView.classList.remove("hidden");
 
     applyPreview();
@@ -1111,8 +1114,8 @@ if(mediaFile){
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            title: 'Two Souls 💕',
-            body: `New memory: ${title}`,
+            title: `${displayName} added a new memory 💕`,
+            body: title,
             image: storagePublicUrl(media_path),
             url: '/'
           })
