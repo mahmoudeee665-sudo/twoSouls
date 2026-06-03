@@ -909,12 +909,13 @@ function applyPreview(){
     const userEmailStr = data.session.user.email;
     displayName = DISPLAY_NAMES[userEmailStr] || 'Someone';
     userEmail.textContent = userEmailStr;
-    if (userEmailStr === 'mahmoud@love.com') { claimOwner(); ownerBadge.classList.remove('hidden'); }
+    if (userEmailStr === 'mahmoud@love.com') ownerBadge.classList.remove('hidden');
     appView.classList.remove("hidden");
 
     applyPreview();
     await loadList();
     requestNotificationPermission();
+    if (userEmailStr === 'mahmoud@love.com') claimOwner();
 
     // Restore search query from sessionStorage
     const saved = sessionStorage.getItem("adminSearch");

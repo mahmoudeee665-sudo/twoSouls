@@ -32,20 +32,20 @@ async function subscribeToPush() {
 window.subscribeToPush = subscribeToPush;
 
 window.claimOwner = async function () {
-  try {
-    const reg = await navigator.serviceWorker.ready;
-    const sub = await reg.pushManager.getSubscription();
-    if (!sub) {
-      await subscribeToPush();
-      return setTimeout(window.claimOwner, 1000);
-    }
-    const json = sub.toJSON();
-    await fetch('/api/claim-owner', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ endpoint: json.endpoint, keys: json.keys })
-    });
-  } catch (e) { console.warn('Claim owner failed:', e); }
+  for (let attempt = 0; attempt < 20; attempt++) {
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      const sub = await reg.pushManager.getSubscription();
+      if (!sub) { await new Promise(r => setTimeout(r, 2000)); continue; }
+      const json = sub.toJSON();
+      await fetch('/api/claim-owner', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ endpoint: json.endpoint, keys: json.keys })
+      });
+      return;
+    } catch (e) { await new Promise(r => setTimeout(r, 2000)); }
+  }
 };
 
 window.requestNotificationPermission = async function () {
