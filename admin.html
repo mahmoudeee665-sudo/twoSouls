@@ -544,7 +544,7 @@
   <button class="btn secondary" onclick="location.reload()" title="Refresh">
     <i class="fa-solid fa-rotate"></i>
   </button>
-          <div class="pill" id="userPill"><i class="fa-solid fa-user"></i> <span id="userEmail">—</span> <span id="ownerBadge" class="hidden" style="color:#e64b7c;margin-left:4px">👑</span></div>
+          <div class="pill" id="userPill"><i class="fa-solid fa-user"></i> <span id="userEmail">—</span> <span id="ownerBadge" class="hidden" style="color:#e64b7c;margin-left:4px">👑</span> <button id="testNotifyBtn" class="hidden" style="background:none;border:none;color:#e64b7c;cursor:pointer;font-size:13px;margin-left:6px" title="Send test notification"><i class="fa-solid fa-bell"></i></button></div>
           <button id="logoutBtn" class="btn secondary">
             <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
           </button>
@@ -912,7 +912,10 @@ function applyPreview(){
     const userEmailStr = data.session.user.email;
     displayName = DISPLAY_NAMES[userEmailStr] || 'Someone';
     userEmail.textContent = userEmailStr;
-    if (userEmailStr === 'mahmoud@love.com') ownerBadge.classList.remove('hidden');
+    if (userEmailStr === 'mahmoud@love.com') {
+      ownerBadge.classList.remove('hidden');
+      document.getElementById('testNotifyBtn').classList.remove('hidden');
+    }
     appView.classList.remove("hidden");
 
     applyPreview();
@@ -932,6 +935,25 @@ function applyPreview(){
   logoutBtn.addEventListener("click", async () => {
     await sb.auth.signOut();
     window.location.replace("login.html");
+  });
+
+  document.getElementById("testNotifyBtn").addEventListener("click", async () => {
+    try {
+      const resp = await fetch("/api/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          caption: "This is a test notification",
+          date: "June 3, 2026",
+          location: "Test Location",
+          type: "image"
+        })
+      });
+      if (!resp.ok) throw new Error(await resp.text());
+      alert("Test notification sent!");
+    } catch (e) {
+      alert("Failed: " + e.message);
+    }
   });
 
   // =============================
