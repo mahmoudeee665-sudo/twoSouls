@@ -106,7 +106,7 @@ const CONTENT_HTML = `
 <br><br>
 بحبك أوي… ونفسي نكمّل طريقنا جنب بعض دايمًا ..
       </p>
-      <strong>Mahmoud & Waad</strong>
+      <strong onclick="location.reload()">Mahmoud & Waad</strong>
     </div>
   </section>
 `;
