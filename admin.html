@@ -541,7 +541,7 @@
             <a href="index.html" class="btn secondary" id="homeBtn" style="text-decoration:none;">
     <i class="fa-solid fa-house"></i> Home
   </a>
-          <div class="pill" id="userPill"><i class="fa-solid fa-user"></i> <span id="userEmail">—</span></div>
+          <div class="pill" id="userPill"><i class="fa-solid fa-user"></i> <span id="userEmail">—</span> <span id="ownerBadge" class="hidden" style="color:#e64b7c;margin-left:4px">👑</span></div>
           <button id="logoutBtn" class="btn secondary">
             <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
           </button>
@@ -698,6 +698,7 @@
   const formMsg = document.getElementById("formMsg");
   const listMsg = document.getElementById("listMsg");
   const userEmail = document.getElementById("userEmail");
+  const ownerBadge = document.getElementById("ownerBadge");
 
   const logoutBtn = document.getElementById("logoutBtn");
 
@@ -908,7 +909,7 @@ function applyPreview(){
     const userEmailStr = data.session.user.email;
     displayName = DISPLAY_NAMES[userEmailStr] || 'Someone';
     userEmail.textContent = userEmailStr;
-    if (userEmailStr === 'mahmoud@love.com') claimOwner();
+    if (userEmailStr === 'mahmoud@love.com') { claimOwner(); ownerBadge.classList.remove('hidden'); }
     appView.classList.remove("hidden");
 
     applyPreview();
