@@ -47,10 +47,6 @@
 <a href="admin.html" class="dashboard-btn" aria-label="Dashboard">
   <i class="fa-solid fa-lock"></i>
 </a>
-<!-- 🔄 Refresh Button -->
-<button id="refreshBtn" class="refresh-btn" aria-label="Refresh" onclick="location.reload()">
-  <i class="fa-solid fa-rotate"></i>
-</button>
 
 
 <div class="hearts-container"></div>
@@ -114,6 +110,15 @@
 <script src="script.js"></script>
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');</script>
 <script src="push.js"></script>
+<script>
+let tapCount = 0;
+document.querySelector('.dashboard-btn')?.addEventListener('click', () => {
+  tapCount++;
+  if (tapCount >= 5) { location.reload(); tapCount = 0; }
+  clearTimeout(tapCount._t);
+  tapCount._t = setTimeout(() => tapCount = 0, 2000);
+});
+</script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
