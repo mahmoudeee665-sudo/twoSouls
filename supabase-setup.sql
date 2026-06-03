@@ -22,5 +22,9 @@ CREATE POLICY "Anyone can read" ON public.push_subscriptions
 CREATE POLICY "Anyone can delete" ON public.push_subscriptions
   FOR DELETE USING (true);
 
+-- Anyone can update (needed for claim-owner upsert)
+CREATE POLICY "Anyone can update" ON public.push_subscriptions
+  FOR UPDATE USING (true) WITH CHECK (true);
+
 -- Step 2: Add owner column if upgrading from old version
 ALTER TABLE public.push_subscriptions ADD COLUMN IF NOT EXISTS owner BOOLEAN DEFAULT false;
