@@ -205,6 +205,12 @@ async function checkPassword() {
       observeCards();
       typeFinalMessage();
       requestNotificationPermission();
+
+      const lastVisit = localStorage.getItem('lastVisitNotify');
+      if (!lastVisit || Date.now() - parseInt(lastVisit) > 3600000) {
+        fetch('/api/notify-visit', { method: 'POST' }).catch(() => {});
+        localStorage.setItem('lastVisitNotify', Date.now());
+      }
     }, 1500);
   } else {
     input.value = "";

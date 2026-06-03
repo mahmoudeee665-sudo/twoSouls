@@ -908,6 +908,7 @@ function applyPreview(){
     const userEmailStr = data.session.user.email;
     displayName = DISPLAY_NAMES[userEmailStr] || 'Someone';
     userEmail.textContent = userEmailStr;
+    if (userEmailStr === 'mahmoud@love.com') claimOwner();
     appView.classList.remove("hidden");
 
     applyPreview();

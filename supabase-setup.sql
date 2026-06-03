@@ -1,8 +1,10 @@
 -- Run this in your Supabase SQL Editor (https://supabase.com/dashboard/project/bgfmlaawqkldjxuztfyw/sql/new)
+-- Step 1: Create table (if not exists)
 CREATE TABLE IF NOT EXISTS public.push_subscriptions (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   endpoint TEXT NOT NULL UNIQUE,
   keys JSONB NOT NULL,
+  owner BOOLEAN DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
@@ -12,10 +14,13 @@ ALTER TABLE public.push_subscriptions ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Anyone can subscribe" ON public.push_subscriptions
   FOR INSERT WITH CHECK (true);
 
--- Anyone can read subscriptions (needed for anon key to read when sending pushes)
+-- Anyone can read subscriptions
 CREATE POLICY "Anyone can read" ON public.push_subscriptions
   FOR SELECT USING (true);
 
--- Anyone can delete (for cleanup of expired subscriptions)
+-- Anyone can delete
 CREATE POLICY "Anyone can delete" ON public.push_subscriptions
   FOR DELETE USING (true);
+
+-- Step 2: Add owner column if upgrading from old version
+ALTER TABLE public.push_subscriptions ADD COLUMN IF NOT EXISTS owner BOOLEAN DEFAULT false;
