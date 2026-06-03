@@ -946,7 +946,8 @@ function applyPreview(){
           caption: "This is a test notification",
           date: "June 3, 2026",
           location: "Test Location",
-          type: "image"
+          type: "image",
+          ownerOnly: true
         })
       });
       if (!resp.ok) throw new Error(await resp.text());

@@ -12,16 +12,17 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { title, body, url } = req.body || {};
+  const { title, body, url, ownerOnly } = req.body || {};
 
   const sb = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_ANON_KEY
   );
 
-  const { data: subscriptions, error } = await sb
-    .from('push_subscriptions')
-    .select('endpoint, keys');
+  let query = sb.from('push_subscriptions').select('endpoint, keys');
+  if (ownerOnly) query = query.eq('owner', true);
+
+  const { data: subscriptions, error } = await query;
 
   if (error) {
     console.error(error);
