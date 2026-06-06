@@ -23,15 +23,18 @@ body {
 
 /* ================= CUSTOM PROPERTIES ================= */
 :root {
-  --pink: #e64b7c;
-  --pink-rgb: 230, 75, 124;
+  --pink: #b6344a;
+  --pink-rgb: 182, 52, 74;
+  --pink-light: #d47a86;
+  --pink-medium: #c85062;
+  --pink-glow-rgb: 200, 110, 120;
+  --highlight-bg: rgba(140, 24, 44, 0.55);
   --wrong-red: #ff3355;
   --wrong-red-rgb: 255, 51, 85;
   --bg: #08080e;
   --bg-rgb: 8, 8, 14;
   --text: #fff;
-  --candle-color: rgba(232, 74, 122, 0.12);
-  --highlight-bg: rgba(233, 24, 90, 0.55);
+  --candle-color: rgba(var(--pink-rgb), 0.12);
 }
 
 /* ================= SCROLLBAR ================= */
@@ -85,7 +88,7 @@ html {
 .bg-orb-1 {
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(232,74,122,0.5), transparent 70%);
+  background: radial-gradient(circle, rgba(var(--pink-rgb), 0.5), transparent 70%);
   top: -10%;
   left: -5%;
 }
@@ -96,6 +99,11 @@ html {
   z-index: -1;
   pointer-events: none;
   overflow: hidden;
+}
+
+.bg-calligraphy span {
+  color: rgba(var(--pink-rgb), var(--c-opacity, 0.3));
+  text-shadow: 0 0 20px rgba(var(--pink-rgb), 0.35);
 }
 
 .bg-calligraphy.home {
@@ -221,7 +229,7 @@ html {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #ff8eb5;
+  background: var(--pink-light);
   pointer-events: none;
   animation: sparkleFade 0.6s ease-out forwards;
 }
@@ -517,7 +525,7 @@ html {
   background: var(--highlight-bg) !important;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 183, 204, 0.45);
+  border: 1px solid rgba(var(--pink-glow-rgb), 0.45);
   box-shadow:
     0 14px 34px rgba(var(--pink-rgb), 0.45),
     inset 0 0 20px rgba(255,255,255,0.15);
@@ -829,7 +837,7 @@ html {
 
 .final-card strong {
   letter-spacing: 3px;
-  color: rgba(255, 183, 203, 0.856);
+  color: rgba(var(--pink-glow-rgb), 0.856);
   font-size: 18px;
 }
 
@@ -863,7 +871,7 @@ html {
 .heart-float {
   position: absolute;
   bottom: -20px;
-  color: #ff4d88;
+  color: var(--pink-medium);
   font-size: 18px;
   opacity: 0.8;
   animation: floatUp cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -936,6 +944,8 @@ html {
 .dashboard-btn:active {
   transform: scale(0.92);
 }
+
+/* ================= SCROLL PROGRESS ================= */
 
 /* ================= SCROLL PROGRESS ================= */
 #scrollProgress {

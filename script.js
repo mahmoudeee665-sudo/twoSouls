@@ -93,7 +93,7 @@ const CONTENT_HTML = `
 
   <section class="final">
     <div class="final-card">
-      <span><i class="fa-solid fa-heart fa-2xl" style="color: #e64b7c;"></i></span>
+      <span><i class="fa-solid fa-heart fa-2xl" style="color: #b6344a;"></i></span>
       <p id="finalText">
 معاكي حسّيت يعني إيه حب حقيقي،
 راحة واطمئنان من غير مجهود
@@ -219,7 +219,7 @@ async function checkPassword() {
     dots.forEach(d => d.classList.add("wrong"));
     setTimeout(() => {
       card.classList.remove("shake");
-      icon.style.color = "#e64b7c";
+      icon.style.color = "#b6344a";
       dots.forEach(d => d.classList.remove("wrong", "filled"));
     }, 600);
   }
@@ -469,14 +469,13 @@ if (container) {
         position: absolute;
         font-family: 'Rekaa', serif;
         font-size: ${40 + Math.random() * 100}px;
-        color: rgba(var(--pink-rgb), ${opacity});
+        --c-opacity: ${opacity};
         left: ${Math.random() * 100}%;
         bottom: ${-5 + band * 20}%;
         z-index: ${band};
         animation: calligraphyFloat ${20 + Math.random() * 30}s linear infinite;
         animation-delay: -${Math.random() * 50}s;
         transform: rotate(${-15 + Math.random() * 30}deg);
-        text-shadow: 0 0 20px rgba(var(--pink-rgb), 0.35);
         pointer-events: none;
         user-select: none;
       `;
@@ -543,7 +542,7 @@ function burstHearts() {
     el.style.cssText = `
       position: fixed; z-index: 10000; pointer-events: none;
       font-size: ${14 + Math.random() * 18}px;
-      color: #e64b7c;
+      color: #b6344a;
       left: 50vw; top: 50vh;
       transform: translate(-50%, -50%);
       opacity: 1;

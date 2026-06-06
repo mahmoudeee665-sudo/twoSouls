@@ -23,8 +23,8 @@
       --stroke:rgba(255,255,255,.16);
       --text:#fff;
       --muted:rgba(255,255,255,.68);
-      --pink:#e64b7c;
-      --pink2:rgba(230,75,124,.35);
+      --pink:#b6344a;
+      --pink2:rgba(var(--pink-rgb),.35);
       --shadow:0 22px 80px rgba(0,0,0,.55);
       --radius:22px;
     }
@@ -63,8 +63,8 @@
     .logo{
       width:44px;height:44px;
       border-radius:16px;
-      background:linear-gradient(135deg, rgba(230,75,124,.9), rgba(255,255,255,.25));
-      box-shadow:0 16px 40px rgba(230,75,124,.22);
+      background:linear-gradient(135deg, rgba(var(--pink-rgb),.9), rgba(255,255,255,.25));
+      box-shadow:0 16px 40px rgba(var(--pink-rgb),.22);
       display:grid;place-items:center;
       border:1px solid rgba(255,255,255,.16);
     }
@@ -106,8 +106,8 @@
       cursor:pointer;
       font-weight:700;
       color:#fff;
-      background:linear-gradient(135deg, rgba(230,75,124,1), rgba(230,75,124,.72));
-      box-shadow:0 16px 42px rgba(230,75,124,.22);
+      background:linear-gradient(135deg, rgba(var(--pink-rgb),1), rgba(var(--pink-rgb),.72));
+      box-shadow:0 16px 42px rgba(var(--pink-rgb),.22);
       transition:transform .18s ease, opacity .18s ease;
       display:inline-flex;
       align-items:center;
@@ -188,7 +188,7 @@
       font-size:16px;
     }
     input:focus, textarea:focus, select:focus{
-      border-color:rgba(230,75,124,.55);
+      border-color:rgba(var(--pink-rgb),.55);
     }
     textarea{min-height:92px; resize:vertical}
 
@@ -485,8 +485,8 @@
   cursor:pointer;
   font-weight:700;
   color:#fff;
-  background:linear-gradient(135deg, rgba(230,75,124,1), rgba(230,75,124,.75));
-  box-shadow:0 12px 30px rgba(230,75,124,.25);
+  background:linear-gradient(135deg, rgba(var(--pink-rgb),1), rgba(var(--pink-rgb),.75));
+  box-shadow:0 12px 30px rgba(var(--pink-rgb),.25);
   display:inline-flex;
   align-items:center;
   gap:8px;
@@ -496,7 +496,7 @@
 
 .fileBtn:hover{
   transform:translateY(-2px);
-  box-shadow:0 16px 40px rgba(230,75,124,.35);
+  box-shadow:0 16px 40px rgba(var(--pink-rgb),.35);
 }
 
 .fileBtn.secondary{
@@ -541,7 +541,7 @@
   <button class="btn secondary" onclick="location.reload()" title="Refresh">
     <i class="fa-solid fa-rotate"></i>
   </button>
-          <div class="pill" id="userPill"><i class="fa-solid fa-user"></i> <span id="userEmail">—</span> <span id="ownerBadge" class="hidden" style="color:#e64b7c;margin-left:4px">👑</span> <button id="testNotifyBtn" class="hidden" style="background:none;border:none;color:#e64b7c;cursor:pointer;font-size:13px;margin-left:6px" title="Send test notification"><i class="fa-solid fa-bell"></i></button></div>
+          <div class="pill" id="userPill"><i class="fa-solid fa-user"></i> <span id="userEmail">—</span> <span id="ownerBadge" class="hidden" style="color:#b6344a;margin-left:4px">👑</span> <button id="testNotifyBtn" class="hidden" style="background:none;border:none;color:#b6344a;cursor:pointer;font-size:13px;margin-left:6px" title="Send test notification"><i class="fa-solid fa-bell"></i></button></div>
           <button id="logoutBtn" class="btn secondary">
             <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
           </button>
@@ -1233,8 +1233,6 @@ if(mediaFile){
     } finally{
       toggleSaving(false);
     }
-
-
 
   });
 </script>
