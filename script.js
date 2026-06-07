@@ -464,11 +464,11 @@ if (container) {
       const el = document.createElement("span");
       el.textContent = words[idx % words.length];
       idx++;
-      const opacity = 0.15 + band * 0.1;
+      const opacity = 0.1 + band * 0.08;
       el.style.cssText = `
         position: absolute;
         font-family: 'Rekaa', serif;
-        font-size: ${80 + Math.random() * 170}px;
+        font-size: ${45 + Math.random() * 110}px;
         --c-opacity: ${opacity};
         left: ${Math.random() * 100}%;
         bottom: ${-5 + band * 20}%;
