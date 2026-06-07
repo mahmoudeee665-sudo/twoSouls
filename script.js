@@ -468,7 +468,7 @@ if (container) {
       el.style.cssText = `
         position: absolute;
         font-family: 'Rekaa', serif;
-        font-size: ${40 + Math.random() * 100}px;
+        font-size: ${60 + Math.random() * 130}px;
         --c-opacity: ${opacity};
         left: ${Math.random() * 100}%;
         bottom: ${-5 + band * 20}%;
