@@ -380,13 +380,21 @@ html {
   padding: 14px;
   border-radius: 16px;
   border: none;
-  background: linear-gradient(135deg, #b6344a, #8c182c);
+  background: linear-gradient(135deg, #b6344a, #8c182c, #b6344a, #a02038, #b6344a);
+  background-size: 300% 300%;
   color: rgba(255,255,255,0.9);
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   box-shadow: 0 4px 20px rgba(140, 24, 44, 0.4);
+  animation: gradientFlow 4s ease-in-out infinite;
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .lock-card button:hover {
@@ -397,6 +405,7 @@ html {
 .lock-card button:active {
   transform: scale(0.97);
   box-shadow: 0 2px 10px rgba(140, 24, 44, 0.3);
+  animation: none;
 }
 
 .lock-success {
