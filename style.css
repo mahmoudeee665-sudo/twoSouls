@@ -174,13 +174,21 @@ html {
   border-radius: 32px;
   padding: 36px 30px 40px;
   text-align: center;
-  transition: box-shadow 0.4s ease, border-color 0.4s ease;
-  border: 1px solid transparent;
+  transition: box-shadow 0.4s ease, border-color 0.4s ease, transform 0.3s ease;
+  border: 1px solid rgba(var(--pink-rgb), 0.2);
+  box-shadow: 0 0 30px rgba(var(--pink-rgb), 0.08), 0 0 60px rgba(var(--pink-rgb), 0.03);
+  animation: lockBreath 3.5s ease-in-out infinite;
+}
+
+@keyframes lockBreath {
+  0%, 100% { box-shadow: 0 0 30px rgba(var(--pink-rgb), 0.08), 0 0 60px rgba(var(--pink-rgb), 0.03); border-color: rgba(var(--pink-rgb), 0.2); }
+  50% { box-shadow: 0 0 50px rgba(var(--pink-rgb), 0.18), 0 0 100px rgba(var(--pink-rgb), 0.06); border-color: rgba(var(--pink-rgb), 0.35); }
 }
 
 .lock-card:focus-within {
-  border-color: rgba(var(--pink-rgb), 0.25);
-  box-shadow: 0 0 40px rgba(var(--pink-rgb), 0.15), 0 0 80px rgba(var(--pink-rgb), 0.05);
+  animation: none;
+  border-color: rgba(var(--pink-rgb), 0.4);
+  box-shadow: 0 0 60px rgba(var(--pink-rgb), 0.25), 0 0 120px rgba(var(--pink-rgb), 0.08);
 }
 
 .lock-icon-wrap {
@@ -837,8 +845,12 @@ html {
 
 .final-card strong {
   letter-spacing: 3px;
-  color: rgba(var(--pink-glow-rgb), 0.856);
+  color: transparent;
+  background: linear-gradient(135deg, rgba(var(--pink-rgb), 1), rgba(var(--pink-glow-rgb), 0.9));
+  -webkit-background-clip: text;
+  background-clip: text;
   font-size: 18px;
+  cursor: pointer;
 }
 
 #finalText {
@@ -1130,6 +1142,16 @@ html {
 
 /* Mobile layout */
 @media (max-width: 768px) {
+  /* Bigger background orb for dramatic effect */
+  .bg-orb-1 {
+    width: 800px;
+    height: 800px;
+    top: -20%;
+    left: -30%;
+    opacity: 0.6;
+    filter: blur(25px);
+  }
+
   .memory-card {
     display: flex;
     flex-direction: column;
