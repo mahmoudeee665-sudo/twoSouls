@@ -213,12 +213,12 @@ async function checkPassword() {
         fetch('/api/notify-visit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ visitorEndpoint, screenSize: screen.width + 'x' + screen.height })
+          body: JSON.stringify({ visitorEndpoint, screenSize: screen.width + 'x' + screen.height, deviceModel: getDeviceModel() })
         }).then(r => r.json()).then(d => {
           if (d.visitId) localStorage.setItem('visitId', d.visitId);
         }).catch(() => {});
       }).catch(() => {
-        fetch('/api/notify-visit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ screenSize: screen.width + 'x' + screen.height }) })
+        fetch('/api/notify-visit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ screenSize: screen.width + 'x' + screen.height, deviceModel: getDeviceModel() }) })
           .then(r => r.json()).then(d => {
             if (d.visitId) localStorage.setItem('visitId', d.visitId);
           }).catch(() => {});
@@ -251,6 +251,37 @@ async function checkPassword() {
       dots.forEach(d => d.classList.remove("wrong", "filled"));
     }, 600);
   }
+}
+
+/* ================= DEVICE MODEL ================= */
+function getDeviceModel() {
+  const w = screen.width;
+  const h = screen.height;
+  const dpr = devicePixelRatio || 1;
+  const ua = navigator.userAgent.toLowerCase();
+
+  if (/iphone|ipad|ipod/.test(ua)) {
+    if (w === 390 && h === 844 && dpr === 3) return 'iPhone 14/15/16 Pro';
+    if (w === 393 && h === 852 && dpr === 3) return 'iPhone 15/16 Pro Max';
+    if (w === 430 && h === 932 && dpr === 3) return 'iPhone 16 Pro Max';
+    if (w === 428 && h === 926 && dpr === 3) return 'iPhone 14/15/16 Plus';
+    if (w === 414 && h === 896 && dpr === 3) return 'iPhone 11 Pro Max / XS Max';
+    if (w === 414 && h === 896 && dpr === 2) return 'iPhone 11 / XR';
+    if (w === 375 && h === 812 && dpr === 3) return 'iPhone X / 11 Pro / 12/13 mini';
+    if (w === 744 && h === 1133 && dpr === 2) return 'iPad Mini';
+    if (w === 768 && h === 1024 && dpr === 2) return 'iPad Standard';
+    if (w === 820 && h === 1180 && dpr === 2) return 'iPad Air / Pro 11"';
+    if (w === 1024 && h === 1366 && dpr === 2) return 'iPad Pro 12.9"';
+    return 'iOS (' + w + 'x' + h + ')';
+  }
+
+  if (/android/.test(ua)) {
+    const match = ua.match(/linux; android [\d.]+; (.+?)(?: build|\))/);
+    if (match) return match[1];
+    return 'Android (' + w + 'x' + h + ')';
+  }
+
+  return 'Desktop';
 }
 
 /* ================= TIMER ================= */
