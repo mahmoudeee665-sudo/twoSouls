@@ -259,11 +259,20 @@ function getDeviceModel() {
   const h = screen.height;
   const dpr = devicePixelRatio || 1;
   const ua = navigator.userAgent.toLowerCase();
+  const iosVer = ua.match(/iphone os ([\d_]+)/);
+  const iosMajor = iosVer ? parseInt(iosVer[1]) : 0;
 
   if (/iphone|ipad|ipod/.test(ua)) {
-    if (w === 390 && h === 844 && dpr === 3) return 'iPhone 14/15/16 Pro';
-    if (w === 393 && h === 852 && dpr === 3) return 'iPhone 15/16 Pro Max';
-    if (w === 430 && h === 932 && dpr === 3) return 'iPhone 16 Pro Max';
+    if (w === 430 && h === 932 && dpr === 3) {
+      if (iosMajor >= 18) return 'iPhone 16 Pro Max';
+      if (iosMajor === 17) return 'iPhone 15 Pro Max';
+      return 'iPhone 14 Pro Max';
+    }
+    if (w === 393 && h === 852 && dpr === 3) {
+      if (iosMajor >= 18) return 'iPhone 16 Pro';
+      return 'iPhone 15 Pro / 16';
+    }
+    if (w === 390 && h === 844 && dpr === 3) return 'iPhone 14/15 Pro';
     if (w === 428 && h === 926 && dpr === 3) return 'iPhone 14/15/16 Plus';
     if (w === 414 && h === 896 && dpr === 3) return 'iPhone 11 Pro Max / XS Max';
     if (w === 414 && h === 896 && dpr === 2) return 'iPhone 11 / XR';
