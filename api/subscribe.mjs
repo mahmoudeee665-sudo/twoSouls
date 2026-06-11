@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { endpoint, keys } = req.body;
+  const { endpoint, keys, email } = req.body;
   if (!endpoint || !keys || !keys.p256dh || !keys.auth) {
     return res.status(400).json({ error: 'Missing or invalid subscription' });
   }
@@ -15,12 +15,26 @@ export default async function handler(req, res) {
     process.env.SUPABASE_ANON_KEY
   );
 
+  const record = { endpoint, keys };
+  if (email) record.email = email;
+
   const { error } = await sb.from('push_subscriptions').upsert(
-    { endpoint, keys },
+    record,
     { onConflict: 'endpoint' }
   );
 
-  if (error) {
+  // If email column doesn't exist yet, retry without email
+  if (error && email) {
+    delete record.email;
+    const { error: err2 } = await sb.from('push_subscriptions').upsert(
+      record,
+      { onConflict: 'endpoint' }
+    );
+    if (err2) {
+      console.error(err2);
+      return res.status(500).json({ error: err2.message });
+    }
+  } else if (error) {
     console.error(error);
     return res.status(500).json({ error: error.message });
   }

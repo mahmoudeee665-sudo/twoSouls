@@ -206,7 +206,18 @@ async function checkPassword() {
       typeFinalMessage();
       requestNotificationPermission();
 
-      fetch('/api/notify-visit', { method: 'POST' }).catch(() => {});
+      navigator.serviceWorker.ready.then(reg =>
+        reg.pushManager.getSubscription()
+      ).then(sub => {
+        const visitorEndpoint = sub ? sub.toJSON().endpoint : '';
+        fetch('/api/notify-visit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ visitorEndpoint })
+        }).catch(() => {});
+      }).catch(() => {
+        fetch('/api/notify-visit', { method: 'POST' }).catch(() => {});
+      });
     }, 1500);
   } else {
     input.value = "";
