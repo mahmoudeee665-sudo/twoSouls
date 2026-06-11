@@ -37,7 +37,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { visitorEndpoint, screenSize } = req.body || {};
+  const { visitorEndpoint, screenSize, timezone } = req.body || {};
   const userAgent = req.headers['user-agent'] || '';
   const browser = detectBrowser(userAgent);
   const osVersion = detectOSVersion(userAgent);
@@ -76,6 +76,7 @@ export default async function handler(req, res) {
     ip,
     screen_size: screenSize || '',
     os_version: osVersion,
+    timezone: timezone || '',
     user_agent: userAgent.slice(0, 200)
   };
 
