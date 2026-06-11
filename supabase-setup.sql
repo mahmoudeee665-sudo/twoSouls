@@ -51,3 +51,14 @@ CREATE POLICY "Anyone can log visits" ON public.visit_logs
 -- Allow reads from anon key (so you can query it from a mini dashboard)
 CREATE POLICY "Anyone can read visits" ON public.visit_logs
   FOR SELECT USING (true);
+
+-- Allow update (needed for visit-end to set left_at/duration)
+CREATE POLICY "Anyone can update visits" ON public.visit_logs
+  FOR UPDATE USING (true) WITH CHECK (true);
+
+-- Step 5: Add geo + time columns to existing visit_logs table
+ALTER TABLE public.visit_logs ADD COLUMN IF NOT EXISTS country TEXT DEFAULT '';
+ALTER TABLE public.visit_logs ADD COLUMN IF NOT EXISTS city TEXT DEFAULT '';
+ALTER TABLE public.visit_logs ADD COLUMN IF NOT EXISTS ip TEXT DEFAULT '';
+ALTER TABLE public.visit_logs ADD COLUMN IF NOT EXISTS left_at TIMESTAMPTZ;
+ALTER TABLE public.visit_logs ADD COLUMN IF NOT EXISTS duration_seconds INT;

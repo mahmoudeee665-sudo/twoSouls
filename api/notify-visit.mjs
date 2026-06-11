@@ -39,24 +39,16 @@ export default async function handler(req, res) {
   const deviceType = detectDevice(userAgent);
   const browser = detectBrowser(userAgent);
 
+  const country = req.headers['x-vercel-ip-country'] || '';
+  const city = req.headers['x-vercel-ip-city'] || '';
+  const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || '';
+
   const sb = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_ANON_KEY
   );
 
-  let { data: subscriptions, error } = await sb
-    .from('push_subscriptions')
-    .select('endpoint, keys, email')
-    .eq('owner', true);
-
-  if (error) {
-    const { data: subs } = await sb
-      .from('push_subscriptions')
-      .select('endpoint, keys')
-      .eq('owner', true);
-    subscriptions = subs;
-  }
-
+  // Identify visitor
   let visitorName = 'Someone';
   if (visitorEndpoint) {
     const { data: allSubs } = await sb
@@ -71,22 +63,44 @@ export default async function handler(req, res) {
     }
   }
 
-  // Log visit
+  // Log visit with geo data
+  let visitId = null;
   const logBody = {
     visitor: visitorName,
     device: deviceType,
     browser,
+    country,
+    city,
+    ip,
     user_agent: userAgent.slice(0, 200)
   };
 
   try {
-    await sb.from('visit_logs').insert(logBody);
+    const { data: inserted } = await sb
+      .from('visit_logs')
+      .insert(logBody)
+      .select('id');
+    if (inserted && inserted.length > 0) visitId = inserted[0].id;
   } catch (e) {
     // table might not exist yet
   }
 
+  // Send push notification to owner
+  let { data: subscriptions, error } = await sb
+    .from('push_subscriptions')
+    .select('endpoint, keys, email')
+    .eq('owner', true);
+
+  if (error) {
+    const { data: subs } = await sb
+      .from('push_subscriptions')
+      .select('endpoint, keys')
+      .eq('owner', true);
+    subscriptions = subs;
+  }
+
   if (!subscriptions || subscriptions.length === 0) {
-    return res.json({ sent: 0, message: 'No owner subscribed' });
+    return res.json({ sent: 0, visitId, message: 'No owner subscribed' });
   }
 
   const payload = JSON.stringify({
@@ -118,5 +132,5 @@ export default async function handler(req, res) {
     }
   }
 
-  res.json({ sent, expired: expired.length });
+  res.json({ sent, expired: expired.length, visitId });
 }

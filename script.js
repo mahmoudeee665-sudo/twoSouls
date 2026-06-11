@@ -214,10 +214,27 @@ async function checkPassword() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ visitorEndpoint })
+        }).then(r => r.json()).then(d => {
+          if (d.visitId) localStorage.setItem('visitId', d.visitId);
         }).catch(() => {});
       }).catch(() => {
-        fetch('/api/notify-visit', { method: 'POST' }).catch(() => {});
+        fetch('/api/notify-visit', { method: 'POST' })
+          .then(r => r.json()).then(d => {
+            if (d.visitId) localStorage.setItem('visitId', d.visitId);
+          }).catch(() => {});
       });
+
+      // Track time on page
+      function sendVisitEnd() {
+        const visitId = localStorage.getItem('visitId');
+        if (!visitId) return;
+        localStorage.removeItem('visitId');
+        navigator.sendBeacon('/api/visit-end', JSON.stringify({ visitId }));
+      }
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) sendVisitEnd();
+      });
+      window.addEventListener('beforeunload', sendVisitEnd);
     }, 1500);
   } else {
     input.value = "";
