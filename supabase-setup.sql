@@ -28,6 +28,3 @@ CREATE POLICY "Anyone can update" ON public.push_subscriptions
 
 -- Step 2: Add owner column if upgrading from old version
 ALTER TABLE public.push_subscriptions ADD COLUMN IF NOT EXISTS owner BOOLEAN DEFAULT false;
-
--- Step 3: Add email column to identify visitors
-ALTER TABLE public.push_subscriptions ADD COLUMN IF NOT EXISTS email TEXT DEFAULT '';

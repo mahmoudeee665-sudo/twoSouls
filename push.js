@@ -8,7 +8,7 @@ function urlBase64ToUint8Array(base64String) {
   return Uint8Array.from([...rawData].map(ch => ch.charCodeAt(0)));
 }
 
-async function subscribeToPush(email) {
+async function subscribeToPush() {
   try {
     const reg = await navigator.serviceWorker.ready;
     let sub = await reg.pushManager.getSubscription();
@@ -22,7 +22,7 @@ async function subscribeToPush(email) {
     await fetch(PUSH_API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ endpoint: json.endpoint, keys: json.keys, email: email || '' })
+      body: JSON.stringify({ endpoint: json.endpoint, keys: json.keys })
     });
   } catch (e) {
     console.warn('Push subscribe failed:', e);
@@ -48,12 +48,12 @@ window.claimOwner = async function () {
   }
 };
 
-window.requestNotificationPermission = async function (email) {
+window.requestNotificationPermission = async function () {
   if (typeof Notification === 'undefined') return;
   if (Notification.permission === 'granted') {
-    subscribeToPush(email);
+    subscribeToPush();
   } else if (Notification.permission === 'default') {
     const perm = await Notification.requestPermission();
-    if (perm === 'granted') subscribeToPush(email);
+    if (perm === 'granted') subscribeToPush();
   }
 };
