@@ -1,17 +1,6 @@
 import webpush from 'web-push';
 import { createClient } from '@supabase/supabase-js';
 
-function detectDevice(ua) {
-  if (!ua) return 'Unknown';
-  const u = ua.toLowerCase();
-  if (/iphone|ipad|ipod/.test(u)) return 'iOS';
-  if (/android/.test(u)) return 'Android';
-  if (/windows/.test(u)) return 'Windows';
-  if (/macintosh|mac os/.test(u)) return 'macOS';
-  if (/linux/.test(u)) return 'Linux';
-  return 'Other';
-}
-
 function detectBrowser(ua) {
   if (!ua) return 'Unknown';
   const u = ua.toLowerCase();
@@ -50,7 +39,6 @@ export default async function handler(req, res) {
 
   const { visitorEndpoint, screenSize } = req.body || {};
   const userAgent = req.headers['user-agent'] || '';
-  const deviceType = detectDevice(userAgent);
   const browser = detectBrowser(userAgent);
   const osVersion = detectOSVersion(userAgent);
 
@@ -82,7 +70,6 @@ export default async function handler(req, res) {
   let visitId = null;
   const logBody = {
     visitor: visitorName,
-    device: deviceType,
     browser,
     country,
     city,
