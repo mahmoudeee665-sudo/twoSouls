@@ -63,4 +63,4 @@ ALTER TABLE public.visit_logs ADD COLUMN IF NOT EXISTS ip TEXT DEFAULT '';
 ALTER TABLE public.visit_logs ADD COLUMN IF NOT EXISTS left_at TIMESTAMPTZ;
 ALTER TABLE public.visit_logs ADD COLUMN IF NOT EXISTS duration_seconds INT;
 ALTER TABLE public.visit_logs ADD COLUMN IF NOT EXISTS screen_size TEXT DEFAULT '';
-ALTER TABLE public.visit_logs ADD COLUMN IF NOT EXISTS device_model TEXT DEFAULT '';
+ALTER TABLE public.visit_logs ADD COLUMN IF NOT EXISTS os_version TEXT DEFAULT '';

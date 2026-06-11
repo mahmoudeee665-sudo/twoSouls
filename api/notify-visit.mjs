@@ -23,6 +23,20 @@ function detectBrowser(ua) {
   return 'Other';
 }
 
+function detectOSVersion(ua) {
+  if (!ua) return '';
+  let m;
+  m = ua.match(/iPhone OS ([\d_]+)/);
+  if (m) return 'iOS ' + m[1].replace(/_/g, '.');
+  m = ua.match(/Android ([\d.]+)/);
+  if (m) return 'Android ' + m[1];
+  m = ua.match(/Windows NT ([\d.]+)/);
+  if (m) return 'Windows ' + m[1];
+  m = ua.match(/Mac OS X ([\d_]+)/);
+  if (m) return 'macOS ' + m[1].replace(/_/g, '.');
+  return '';
+}
+
 webpush.setVapidDetails(
   'mailto:admin@twosouls.app',
   process.env.VAPID_PUBLIC_KEY,
@@ -34,10 +48,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { visitorEndpoint, screenSize, deviceModel } = req.body || {};
+  const { visitorEndpoint, screenSize } = req.body || {};
   const userAgent = req.headers['user-agent'] || '';
   const deviceType = detectDevice(userAgent);
   const browser = detectBrowser(userAgent);
+  const osVersion = detectOSVersion(userAgent);
 
   const country = req.headers['x-vercel-ip-country'] || '';
   const city = req.headers['x-vercel-ip-city'] || '';
@@ -73,7 +88,7 @@ export default async function handler(req, res) {
     city,
     ip,
     screen_size: screenSize || '',
-    device_model: deviceModel || '',
+    os_version: osVersion,
     user_agent: userAgent.slice(0, 200)
   };
 
