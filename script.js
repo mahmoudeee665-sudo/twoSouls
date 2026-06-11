@@ -213,12 +213,12 @@ async function checkPassword() {
         fetch('/api/notify-visit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ visitorEndpoint })
+          body: JSON.stringify({ visitorEndpoint, screenSize: screen.width + 'x' + screen.height })
         }).then(r => r.json()).then(d => {
           if (d.visitId) localStorage.setItem('visitId', d.visitId);
         }).catch(() => {});
       }).catch(() => {
-        fetch('/api/notify-visit', { method: 'POST' })
+        fetch('/api/notify-visit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ screenSize: screen.width + 'x' + screen.height }) })
           .then(r => r.json()).then(d => {
             if (d.visitId) localStorage.setItem('visitId', d.visitId);
           }).catch(() => {});
