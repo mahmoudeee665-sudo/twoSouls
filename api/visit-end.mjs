@@ -16,25 +16,31 @@ export default async function handler(req, res) {
   );
 
   const now = new Date().toISOString();
-
-  // Get the row to calculate duration from created_at
-  const { data: row } = await sb
-    .from('visit_logs')
-    .select('created_at')
-    .eq('id', visitId)
-    .single();
-
   let durationSeconds = null;
-  if (row && row.created_at) {
-    const start = new Date(row.created_at).getTime();
-    const end = new Date(now).getTime();
-    durationSeconds = Math.round((end - start) / 1000);
+
+  try {
+    const { data: rows } = await sb
+      .from('visit_logs')
+      .select('created_at')
+      .eq('id', visitId);
+
+    if (rows && rows.length > 0 && rows[0].created_at) {
+      const start = new Date(rows[0].created_at).getTime();
+      const end = new Date(now).getTime();
+      durationSeconds = Math.round((end - start) / 1000);
+    }
+  } catch (e) {
+    // ignore
   }
 
-  await sb
-    .from('visit_logs')
-    .update({ left_at: now, duration_seconds: durationSeconds })
-    .eq('id', visitId);
+  try {
+    await sb
+      .from('visit_logs')
+      .update({ left_at: now, duration_seconds: durationSeconds })
+      .eq('id', visitId);
+  } catch (e) {
+    // ignore
+  }
 
   res.json({ ok: true, duration_seconds: durationSeconds });
 }

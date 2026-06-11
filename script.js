@@ -229,7 +229,7 @@ async function checkPassword() {
         const visitId = localStorage.getItem('visitId');
         if (!visitId) return;
         localStorage.removeItem('visitId');
-        navigator.sendBeacon('/api/visit-end', JSON.stringify({ visitId }));
+        navigator.sendBeacon('/api/visit-end', new Blob([JSON.stringify({ visitId })], { type: 'application/json' }));
       }
       document.addEventListener('visibilitychange', () => {
         if (document.hidden) sendVisitEnd();
