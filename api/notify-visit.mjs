@@ -1,6 +1,28 @@
 import webpush from 'web-push';
 import { createClient } from '@supabase/supabase-js';
 
+function detectDevice(ua) {
+  if (!ua) return 'Unknown';
+  const u = ua.toLowerCase();
+  if (/iphone|ipad|ipod/.test(u)) return 'iOS';
+  if (/android/.test(u)) return 'Android';
+  if (/windows/.test(u)) return 'Windows';
+  if (/macintosh|mac os/.test(u)) return 'macOS';
+  if (/linux/.test(u)) return 'Linux';
+  return 'Other';
+}
+
+function detectBrowser(ua) {
+  if (!ua) return 'Unknown';
+  const u = ua.toLowerCase();
+  if (/samsungbrowser|samsung/.test(u)) return 'Samsung Browser';
+  if (/chrome/.test(u) && /edg/.test(u)) return 'Edge';
+  if (/chrome/.test(u)) return 'Chrome';
+  if (/safari/.test(u) && !/chrome/.test(u)) return 'Safari';
+  if (/firefox/.test(u)) return 'Firefox';
+  return 'Other';
+}
+
 webpush.setVapidDetails(
   'mailto:admin@twosouls.app',
   process.env.VAPID_PUBLIC_KEY,
@@ -13,6 +35,9 @@ export default async function handler(req, res) {
   }
 
   const { visitorEndpoint } = req.body || {};
+  const userAgent = req.headers['user-agent'] || '';
+  const deviceType = detectDevice(userAgent);
+  const browser = detectBrowser(userAgent);
 
   const sb = createClient(
     process.env.SUPABASE_URL,
@@ -24,17 +49,12 @@ export default async function handler(req, res) {
     .select('endpoint, keys, email')
     .eq('owner', true);
 
-  // Fall back if email column doesn't exist yet
   if (error) {
     const { data: subs } = await sb
       .from('push_subscriptions')
       .select('endpoint, keys')
       .eq('owner', true);
     subscriptions = subs;
-  }
-
-  if (!subscriptions || subscriptions.length === 0) {
-    return res.json({ sent: 0, message: 'No owner subscribed' });
   }
 
   let visitorName = 'Someone';
@@ -49,6 +69,24 @@ export default async function handler(req, res) {
       if (email === 'waad@love.com') visitorName = 'Waad';
       else if (email === 'mahmoud@love.com') visitorName = 'You';
     }
+  }
+
+  // Log visit
+  const logBody = {
+    visitor: visitorName,
+    device: deviceType,
+    browser,
+    user_agent: userAgent.slice(0, 200)
+  };
+
+  try {
+    await sb.from('visit_logs').insert(logBody);
+  } catch (e) {
+    // table might not exist yet
+  }
+
+  if (!subscriptions || subscriptions.length === 0) {
+    return res.json({ sent: 0, message: 'No owner subscribed' });
   }
 
   const payload = JSON.stringify({

@@ -31,3 +31,23 @@ ALTER TABLE public.push_subscriptions ADD COLUMN IF NOT EXISTS owner BOOLEAN DEF
 
 -- Step 3: Add email column to identify visitors
 ALTER TABLE public.push_subscriptions ADD COLUMN IF NOT EXISTS email TEXT DEFAULT '';
+
+-- Step 4: Visit logs table (device tracking)
+CREATE TABLE IF NOT EXISTS public.visit_logs (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  visitor TEXT NOT NULL DEFAULT 'Someone',
+  device TEXT NOT NULL DEFAULT 'Unknown',
+  browser TEXT NOT NULL DEFAULT 'Unknown',
+  user_agent TEXT DEFAULT '',
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE public.visit_logs ENABLE ROW LEVEL SECURITY;
+
+-- Allow inserts from anon key (anyone can log a visit)
+CREATE POLICY "Anyone can log visits" ON public.visit_logs
+  FOR INSERT WITH CHECK (true);
+
+-- Allow reads from anon key (so you can query it from a mini dashboard)
+CREATE POLICY "Anyone can read visits" ON public.visit_logs
+  FOR SELECT USING (true);
