@@ -12,27 +12,47 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  const { visitorEndpoint } = req.body || {};
+
   const sb = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_ANON_KEY
   );
 
-  const { data: subscriptions, error } = await sb
+  let { data: subscriptions, error } = await sb
     .from('push_subscriptions')
-    .select('endpoint, keys')
+    .select('endpoint, keys, email')
     .eq('owner', true);
 
+  // Fall back if email column doesn't exist yet
   if (error) {
-    console.error(error);
-    return res.status(500).json({ error: error.message });
+    const { data: subs } = await sb
+      .from('push_subscriptions')
+      .select('endpoint, keys')
+      .eq('owner', true);
+    subscriptions = subs;
   }
 
   if (!subscriptions || subscriptions.length === 0) {
     return res.json({ sent: 0, message: 'No owner subscribed' });
   }
 
+  let visitorName = 'Someone';
+  if (visitorEndpoint) {
+    const { data: allSubs } = await sb
+      .from('push_subscriptions')
+      .select('email')
+      .eq('endpoint', visitorEndpoint);
+
+    if (allSubs && allSubs.length > 0 && allSubs[0].email !== undefined) {
+      const email = allSubs[0].email || '';
+      if (email === 'waad@love.com') visitorName = 'Waad';
+      else if (email === 'mahmoud@love.com') visitorName = 'You';
+    }
+  }
+
   const payload = JSON.stringify({
-    title: 'Someone opened Two Souls 💕',
+    title: visitorName + ' opened Two Souls 💕',
     body: '',
     url: '/'
   });

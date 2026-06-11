@@ -917,7 +917,7 @@ function applyPreview(){
 
     applyPreview();
     await loadList();
-    requestNotificationPermission();
+    requestNotificationPermission(userEmailStr);
     if (userEmailStr === 'mahmoud@love.com') claimOwner();
 
     // Restore search query from sessionStorage
